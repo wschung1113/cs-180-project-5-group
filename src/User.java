@@ -1,4 +1,52 @@
+import java.util.ArrayList;
+
 public class User {
-    public User() {
+    String username;
+    String password;
+    String alias;
+    ArrayList<String> posts;
+
+    public User(String username, String password, String alias) {
+        this.username = username;
+        this.password = password;
+        this.alias = alias;
+        this.posts = new ArrayList<>();
+    }
+
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
+    }
+
+    public ArrayList<String> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(ArrayList<String> posts) {
+        this.posts = posts;
     }
 }
