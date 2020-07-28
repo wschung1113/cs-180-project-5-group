@@ -2,9 +2,11 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.*;
+import java.time.*;
 
 import static javax.swing.JOptionPane.OK_OPTION;
 import static javax.swing.JOptionPane.YES_OPTION;
+import java.util.ArrayList;
 
 public class PostGUI extends JComponent implements Runnable {
     PostGUI postGUI;  // main post window
@@ -24,6 +26,7 @@ public class PostGUI extends JComponent implements Runnable {
 
     // Panels
     JPanel panel;
+    JPanel newPost;
 
     // Text area & fields
     JTextArea contentTextArea;  // write post content here
@@ -41,6 +44,12 @@ public class PostGUI extends JComponent implements Runnable {
     JButton commentButton;  // switches to commentsContent
     JButton homeButton;  // switches to newsFeedHomeContent
     JButton writeCommentButton;  // "writes" comment in the commentTestField
+    JButton editButton;  //allows user to edit a post
+
+    //for posts
+    Post post; //post being written
+    Poster poster; //for creating, editing, and deleting posts
+    User user; //user making a post
 
     // Icons
     Icon homeIcon = new ImageIcon("C:\\Users\\Me\\IdeaProjects\\Cs180Proj5Group\\home.png");
@@ -53,16 +62,51 @@ public class PostGUI extends JComponent implements Runnable {
         frame.setSize(600, 400);
         frame.setTitle("Social Media");
 
+        // edit button for posts
+        editButton = new JButton("Edit");
+        editButton.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e) {
+                yesNo = JOptionPane.showConfirmDialog(null, "Edit post?",
+                        null, JOptionPane.YES_NO_OPTION);
+                if (yesNo == JOptionPane.YES_OPTION) {
+                    post = poster.editPost(user, post);
+                    newPost = new JPanel();
+                    newPost.add(new JLabel(post.getPostString()));
+                    newPost.add(editButton);
+                }
+
+            }
+        });
+
 
         // newsFeedHomeContent
         newsFeedHomeContent = new Container();
-        newsFeedHomeContent.setLayout(new BorderLayout());
+        //.setLayout(new BorderLayout());
+        newsFeedHomeContent.setLayout(new GridLayout(0, 1));
         newsFeedHomeContent.setSize(frame.getSize());  // set size of the content equal to that of the frame
-        newsFeedHomeContent.add(new PostGUI(), BorderLayout.CENTER);
+        //newsFeedHomeContent.add(new PostGUI(), BorderLayout.CENTER);
+        newsFeedHomeContent.add(new PostGUI());
 
         // panel 1
         panel = new JPanel();
         newsFeedHomeContent.add(panel, BorderLayout.CENTER);
+        //retrieving previous posts from file
+
+        //get current users here (client)
+
+        /**
+
+         ArrayList<Post> allPosts = new ArrayList<Post>;
+         for (User user : users) {
+             userPosts = user.getPosts();
+             for (Post post : userPosts) {
+                 allPosts.add(post);
+             }
+         }
+         */
+
+        //add posts to newsfeed here
 
 
         // userFeedHomeContent
@@ -156,16 +200,34 @@ public class PostGUI extends JComponent implements Runnable {
                     // returns text to somewhere in contentTextArea
 
                     //this will be commented out until we can get access to user variable
+                     User user = new User("Username", "password", "John Doe");
+                     Poster poster = new Poster(user);
+                     Post post = poster.createPost(user, contentTextArea.getText());
+                     JPanel newPost = new JPanel();
+                     newPost.setLayout(new BorderLayout());
+                     LocalDateTime time0 = LocalDateTime.now();
+                     String timeString = time0.toString();
+                     String[] timeArray = timeString.split("T");
+                     String date = timeArray[0];
 
-                    /**
-                     * Poster poster = new Poster(user);
-                     * poster.createPost(user, contentTextArea.getText());
-                     *
-                     */
+                     String[] time1 = timeArray[1].split(":");
+                     String hour = time1[0];
+                     String minute = time1[1];
+
+                     String title = user.getUsername() + ":" + user.getAlias() + ":" + date + " " + hour + ":" + minute + ":";
+                     Border bor = BorderFactory.createTitledBorder(title);
+                     JLabel label = new JLabel(post.getPostString());
+                     newPost.setBorder(bor);
+                     newPost.add(label);
+
+                     newPost.add(editButton, BorderLayout.SOUTH);
+                     newsFeedHomeContent.add(newPost);
+
                 }
 
             }
         });
+
 //        commentButton = new JButton("Comments");
 //        commentButton.addActionListener(new ActionListener()
 //        {

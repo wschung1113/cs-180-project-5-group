@@ -73,6 +73,8 @@ public class Poster {
 
         String name = user.getAlias();
         Post post = new Post(name, postString);
+        return post;
+        /**
         String[] options = new String[3];
         options[0] = "Yes, post!";
         options[1] = "No, edit.";
@@ -100,11 +102,12 @@ public class Poster {
                 return null;
             }
         } while (true);
+         */
 
 
     }
 
-    public void editPost(User user, Post postEdit) {
+    public Post editPost(User user, Post postEdit) {
         //this method assumes that the user has already selected which post to edit
 
         ArrayList<Post> userPosts = readFromFile(user);
@@ -135,7 +138,7 @@ public class Poster {
                     JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, null);
 
             if (choice == JOptionPane.CANCEL_OPTION) {
-                return;
+                return null;
             }
 
         } while (choice != JOptionPane.YES_OPTION);
@@ -146,6 +149,7 @@ public class Poster {
         writeToFile(userPosts);
 
         //need to determine whether we are storing posts with user or elsewhere
+        return editedPost;
 
     }
 
@@ -234,7 +238,7 @@ public class Poster {
                 }
                 i++;
             }
-
+            user.setPosts(userPosts);
             return userPosts;
         } catch (IOException e) {
             e.printStackTrace();
