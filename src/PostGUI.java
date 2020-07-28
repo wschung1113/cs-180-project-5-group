@@ -154,6 +154,14 @@ public class PostGUI extends JComponent implements Runnable {
 
                 if (yesNo == YES_OPTION) {
                     // returns text to somewhere in contentTextArea
+
+                    //this will be commented out until we can get access to user variable
+
+                    /**
+                     * Poster poster = new Poster(user);
+                     * poster.createPost(user, contentTextArea.getText());
+                     *
+                     */
                 }
 
             }

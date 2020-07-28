@@ -67,18 +67,9 @@ public class Poster {
 
     }
 
-    public void createPost(User user, String postString) {
+    public Post createPost(User user, String postString) {
 
         //here is where I will figure out whether the user is valid
-/**
-        if ()
-
-        }
-
-        else {
-
-        }
-*/
 
         String name = user.getAlias();
         Post post = new Post(name, postString);
@@ -95,7 +86,7 @@ public class Poster {
 
             if (choice == JOptionPane.YES_OPTION) {
                 //write post to gui
-                return;
+                return post;
 
             } else if (choice == JOptionPane.NO_OPTION) {
                 //edit post
@@ -103,10 +94,10 @@ public class Poster {
                         "Edit post", JOptionPane.PLAIN_MESSAGE);
 
             } else if (choice == JOptionPane.CANCEL_OPTION) {
-                return;
+                return null;
                 //exit
             } else {
-                return;
+                return null;
             }
         } while (true);
 
