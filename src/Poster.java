@@ -61,8 +61,9 @@ public class Poster {
     public static void main(String[] args) {
 
         User user = new User("username", "password", "John Doe");
+        String string = "";
         Poster poster = new Poster(user);
-        poster.createPost(user);
+        poster.createPost(user, string);
 
     }
 
@@ -94,6 +95,7 @@ public class Poster {
 
             if (choice == JOptionPane.YES_OPTION) {
                 //write post to gui
+                return;
 
             } else if (choice == JOptionPane.NO_OPTION) {
                 //edit post
@@ -103,8 +105,10 @@ public class Poster {
             } else if (choice == JOptionPane.CANCEL_OPTION) {
                 return;
                 //exit
+            } else {
+                return;
             }
-        } while (option != JOptionPane.CANCEL_OPTION);
+        } while (true);
 
 
     }
@@ -154,8 +158,31 @@ public class Poster {
 
     }
 
-    public void deletePost(User user) {
+    /**
+     *deletes post from file
+     *
+     * @param user - user that is trying to delete the post
+     * @param postString - text in post
+     */
 
+    public void deletePost(User user, String postString) {
+        ArrayList<Post> userPosts = readFromFile(user);
+        int loc = 0;
+        for (Post post : userPosts) {
+            if (post.getPostString().equals(postString)) {
+                break;
+            }
+            loc++;
+        }
+
+        int length = userPosts.size();
+
+        for (int i = loc; i < length - 1; i++) {
+            userPosts.set(i, userPosts.get(i + 1));
+        }
+        writeToFile(userPosts);
+
+        //make it so it's no longer visible here
     }
 
     public void writeToFile(ArrayList<Post> userPosts) {
@@ -221,5 +248,7 @@ public class Poster {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        return null;
     }
 }
