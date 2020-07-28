@@ -14,11 +14,9 @@ public class Post {
     private String postString; //text in post
     private static final int SIZE = 25; //limit to length of line
 
-
-
     public Post(String name, String postString) {
         this.name = name; //name of user making post
-        this.postString = postString;//String that user enters to be post
+        this.postString = formatPost(postString);
     }
 
     /**
@@ -28,7 +26,7 @@ public class Post {
      */
 
     public String getName() {
-        return this.name;
+        return name;
     }
 
     /**
@@ -37,40 +35,45 @@ public class Post {
      */
 
     public String getPostString() {
-        return this.postString;
+        return postString;
+    }
+
+    /**
+     * sets postString of post to parameter
+     *
+     * @param postString, String to be new postString of post
+     */
+
+
+    public void setPostString(String postString) {
+        this.postString = postString;
     }
 
     /**
      * formats post to fit within width
-     * @return String[] where zeroth element is the user's nae
-     *         and the first element is the formatted text
+     * @return String formatted text
      */
 
-    public String[] formatPost() {
+    public String formatPost(String postString) {
         String format = "";
-        String[] formattedPost = new String[2];
-        String string = this.getPostString();
-        int length = string.length();
-        formattedPost[0] = name;
+
+        int length = postString.length();
         int j = 0;
 
         for (int i = 0; i < length; i++) {
-            format += string.charAt(i);
+            format += postString.charAt(i);
 
             if (j > SIZE) {
-                if (string.charAt(i) == '.' || string.charAt(i) == ' ') {
+                if (postString.charAt(i) == '.' || postString.charAt(i) == ' ') {
                     format += "\n";
-                    while (i < length - 1 && string.charAt(++i) == ' ');
+                    while (i < length - 1 && postString.charAt(++i) == ' ');
                     i--;
                     j = 0;
                 }
             }
-
             j++;
         }
 
-        formattedPost[1] = format;
-
-        return formattedPost;
+        return format;
     }
 }
