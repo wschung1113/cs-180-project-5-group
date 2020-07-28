@@ -91,7 +91,7 @@ public class PostGUI extends JComponent implements Runnable {
             public void actionPerformed(ActionEvent e)
             {
                 // send to news feed home
-                yesNo = JOptionPane.showConfirmDialog(null, "Would you like return home?",
+                yesNo = JOptionPane.showConfirmDialog(null, "Go to News Feed Home?",
                         null, JOptionPane.YES_NO_OPTION);
 
                 if (yesNo == YES_OPTION) {
@@ -106,14 +106,33 @@ public class PostGUI extends JComponent implements Runnable {
             }
         });
 
-        nameLabel = new JLabel("username");  // should differ by each username
+//        nameLabel = new JLabel("username");  // should differ by each username
         nameButton = new JButton("username");
+        nameButton.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                // send to news feed home
+                yesNo = JOptionPane.showConfirmDialog(null, "Go to User Home?",
+                        null, JOptionPane.YES_NO_OPTION);
 
+                if (yesNo == YES_OPTION) {
+                    frame.getContentPane().removeAll();  // or removeAll();
+
+                    frame.getContentPane().add(userHomeContent);
+
+                    frame.repaint();
+
+                    frame.revalidate();
+                }
+            }
+        });
         privatePublicComboBox = new JComboBox<String>(postPrivacyOptions);
         privatePublicComboBox.setVisible(true);
 
         panel.add(homeButton);
-        panel.add(nameLabel);
+//        panel.add(nameLabel);
+        panel.add(nameButton);
         panel.add(privatePublicComboBox);
         postContent.add(panel, BorderLayout.PAGE_START);
 
