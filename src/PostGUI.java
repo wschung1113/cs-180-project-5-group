@@ -158,26 +158,26 @@ public class PostGUI extends JComponent implements Runnable {
 
             }
         });
-        commentButton = new JButton("Comments");
-        commentButton.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent e)
-            {
-                yesNo = (int) JOptionPane.showConfirmDialog(null,
-                        "Would you like to move to comments?", null, JOptionPane.YES_NO_OPTION);
-
-                if (yesNo == YES_OPTION) {
-                    // move to comments
-                }
-            }
-        });
-        commentTextField = new JTextField(30);
-        writeCommentButton = new JButton(pencilIcon);
-        writeCommentButton.setPreferredSize(new Dimension(30, 30));
+//        commentButton = new JButton("Comments");
+//        commentButton.addActionListener(new ActionListener()
+//        {
+//            public void actionPerformed(ActionEvent e)
+//            {
+//                yesNo = (int) JOptionPane.showConfirmDialog(null,
+//                        "Would you like to move to comments?", null, JOptionPane.YES_NO_OPTION);
+//
+//                if (yesNo == YES_OPTION) {
+//                    // move to comments
+//                }
+//            }
+//        });
+//        commentTextField = new JTextField(30);
+//        writeCommentButton = new JButton(pencilIcon);
+//        writeCommentButton.setPreferredSize(new Dimension(30, 30));
         panel.add(postButton);
-        panel.add(commentButton);
-        panel.add(commentTextField);
-        panel.add(writeCommentButton);
+//        panel.add(commentButton);
+//        panel.add(commentTextField);
+//        panel.add(writeCommentButton);
         postContent.add(panel, BorderLayout.SOUTH);
 
         frame.add(postContent);
