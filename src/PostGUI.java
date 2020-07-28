@@ -64,7 +64,8 @@ public class PostGUI extends JComponent implements Runnable {
         panel = new JPanel();
         newsFeedHomeContent.add(panel, BorderLayout.CENTER);
 
-        // newsFeedHomeContent
+
+        // userFeedHomeContent
         userHomeContent = new Container();
         userHomeContent.setLayout(new BorderLayout());
         userHomeContent.setSize(frame.getSize());  // set size of the content equal to that of the frame
