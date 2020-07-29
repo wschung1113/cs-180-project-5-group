@@ -12,11 +12,13 @@ public class Post {
      */
     private String name; //user's name that made the post
     private String postString; //text in post
+    private String time; //time post was made
     private static final int SIZE = 25; //limit to length of line
 
-    public Post(String name, String postString) {
+    public Post(String name, String postString, String time) {
         this.name = name; //name of user making post
         this.postString = formatPost(postString);
+        this.time = time;
     }
 
     /**
@@ -36,6 +38,14 @@ public class Post {
 
     public String getPostString() {
         return postString;
+    }
+
+    /**
+     * returns time post was made
+     * @return String, time post was made
+     */
+    public String getTime() {
+        return time;
     }
 
     /**

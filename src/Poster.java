@@ -1,5 +1,6 @@
 import javax.swing.JOptionPane;
 import java.io.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 /**
@@ -64,19 +65,29 @@ public class Poster {
         User user = new User("username", "password", "John Doe");
         String string = "Hey there";
         Poster poster = new Poster(user);
-        Post post = poster.createPost(user, string);
+        LocalDateTime time0 = LocalDateTime.now();
+        String timeString = time0.toString();
+        String[] timeArray = timeString.split("T");
+        String date = timeArray[0];
+
+        String[] time1 = timeArray[1].split(":");
+        String hour = time1[0];
+        String minute = time1[1];
+        String time = date + " " + hour + ":" + minute;
+
+        Post post = poster.createPost(user, string, time);
         userPosts.add(post);
         poster.writeToFile(userPosts);
         post = poster.editPost(user, post);
 
     }
 
-    public Post createPost(User user, String postString) {
+    public Post createPost(User user, String postString, String time) {
 
         //here is where I will figure out whether the user is valid
 
         String name = user.getAlias();
-        Post post = new Post(name, postString);
+        Post post = new Post(name, postString, time);
         ArrayList<Post> userPosts = user.getPosts();
         userPosts.add(post);
         user.setPosts(userPosts);
@@ -151,7 +162,7 @@ public class Poster {
 
         } while (choice != JOptionPane.YES_OPTION);
 
-        Post editedPost = new Post(postEdit.getName(), replacement);
+        Post editedPost = new Post(postEdit.getName(), replacement, postEdit.getTime());
         userPosts.set(loc, editedPost);
         //writing to GUI
         writeToFile(userPosts);
@@ -202,6 +213,8 @@ public class Poster {
                 StringBuilder sb = new StringBuilder();
             sb.append(post.getName());
             sb.append(":");
+            sb.append(post.getTime());
+            sb.append(":");
             sb.append(post.getPostString());
             sb.append(";\n");
 
@@ -239,11 +252,12 @@ public class Poster {
                 String[] postSplit = s.split(":"); //info before colon is name, after is postString
 
                 String name = postSplit[0];
+                String time = postSplit[1];
                 if (name.equals(user.getAlias())) {
-                    String postString = postSplit[1];
+                    String postString = postSplit[2];
                     postString = postString.substring(0, postString.length() - 1); //splitting semicolon off of end of line
 
-                    Post post = new Post(name, postString);
+                    Post post = new Post(name, postString, time);
                     userPosts.add(post);
                 }
                 i++;

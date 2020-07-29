@@ -17,6 +17,7 @@ public class PostGUI extends JComponent implements Runnable {
     int curY;  // current mouse y coordinate for click
 
     String postType;  // whether the post is "Private" or "Public"
+    String time; //time post was made
     private static final String[] postPrivacyOptions = {"Public", "Private"};
 
     // Contents
@@ -188,23 +189,25 @@ public class PostGUI extends JComponent implements Runnable {
 
                     //this will be commented out until we can get access to user variable
                      poster = new Poster(user);
-                     post = poster.createPost(user, contentTextArea.getText());
-                     newPost = new JPanel();
-                     newPost.setLayout(new BorderLayout());
-                     LocalDateTime time0 = LocalDateTime.now();
-                     String timeString = time0.toString();
-                     String[] timeArray = timeString.split("T");
-                     String date = timeArray[0];
+                    LocalDateTime time0 = LocalDateTime.now();
+                    String timeString = time0.toString();
+                    String[] timeArray = timeString.split("T");
+                    String date = timeArray[0];
 
-                     String[] time1 = timeArray[1].split(":");
-                     String hour = time1[0];
-                     String minute = time1[1];
+                    String[] time1 = timeArray[1].split(":");
+                    String hour = time1[0];
+                    String minute = time1[1];
+                    time = date + " " + hour + ":" + minute;
+                    post = poster.createPost(user, contentTextArea.getText(), time);
+                    newPost = new JPanel();
+                    newPost.setLayout(new BorderLayout());
 
-                     String title = user.getUsername() + ":" + user.getAlias() + ":" + date + " " + hour + ":" + minute + ":";
-                     Border bor = BorderFactory.createTitledBorder(title);
-                     JLabel label = new JLabel(post.getPostString());
-                     newPost.setBorder(bor);
-                     newPost.add(label);
+
+                    String title = user.getUsername() + ":" + user.getAlias() + time;
+                    Border bor = BorderFactory.createTitledBorder(title);
+                    JLabel label = new JLabel(post.getPostString());
+                    newPost.setBorder(bor);
+                    newPost.add(label);
 
                      newPost.add(editButton, BorderLayout.SOUTH);
                      newsFeedHomeContent.add(newPost);
@@ -229,11 +232,13 @@ public class PostGUI extends JComponent implements Runnable {
                     String timeString = time0.toString();
                     String[] timeArray = timeString.split("T");
                     String date = timeArray[0];
+
                     String[] time1 = timeArray[1].split(":");
                     String hour = time1[0];
                     String minute = time1[1];
+                    time = date + " " + hour + ":" + minute;
 
-                    String title = user.getUsername() + ":" + user.getAlias() + ":" + date + " " + hour + ":" + minute + ":";
+                    String title = user.getUsername() + ":" + user.getAlias() + ":" + time;
                     Border bor = BorderFactory.createTitledBorder(title);
                     JLabel label = new JLabel(post.getPostString());
                     newPost.setBorder(bor);

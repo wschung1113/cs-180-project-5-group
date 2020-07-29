@@ -15,7 +15,7 @@ public class Commenter {
     //JButton postReply;
     JTextField comment;
     //JTextField reply1;
-    Implement imp;
+    //Implement imp;
     int numcom = 0;
     ArrayList<comment> commentsOnPostList = new ArrayList<>();
     ArrayList<JButton> commentLikeButton = new ArrayList<>();
