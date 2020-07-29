@@ -28,6 +28,8 @@ public class PostGUI extends JComponent implements Runnable {
     // Panels
     JPanel panel;
     JPanel newPost;
+    JPanel editedPost;
+    ArrayList<JPanel> currentPosts = new ArrayList<JPanel>(); //contains all posts, will need to be updated by server at start
 
     // Text area & fields
     JTextArea contentTextArea;  // write post content here
@@ -46,6 +48,7 @@ public class PostGUI extends JComponent implements Runnable {
     JButton homeButton;  // switches to newsFeedHomeContent
     JButton writeCommentButton;  // "writes" comment in the commentTestField
     JButton editButton;  //allows user to edit a post
+    JButton deleteButton; //allows user to delete a post
 
     //for posts
     Post post; //post being written
@@ -64,19 +67,27 @@ public class PostGUI extends JComponent implements Runnable {
         frame.setTitle("Social Media");
 
         // edit button for posts
-        editButton = new JButton("Edit");
+        editButton = new JButton("Edit a Post");
+        deleteButton = new JButton("Delete a Post");
 
         // newsFeedHomeContent
         newsFeedHomeContent = new Container();
         //.setLayout(new BorderLayout());
-        newsFeedHomeContent.setLayout(new GridLayout(0, 1));
+        newsFeedHomeContent.setLayout(new BorderLayout());
         newsFeedHomeContent.setSize(frame.getSize());  // set size of the content equal to that of the frame
         //newsFeedHomeContent.add(new PostGUI(), BorderLayout.CENTER);
         newsFeedHomeContent.add(new PostGUI());
 
         // panel 1
-        panel = new JPanel();
-        newsFeedHomeContent.add(panel, BorderLayout.CENTER);
+        JPanel postPanel = new JPanel();
+        postPanel.setLayout(new GridLayout(0, 1));
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new GridLayout(1, 2));
+        buttonPanel.add(editButton);
+        buttonPanel.add(deleteButton);
+
+        newsFeedHomeContent.add(postPanel);
+        newsFeedHomeContent.add(buttonPanel, BorderLayout.SOUTH);
         //retrieving previous posts from file
 
         //get current users here (client)
@@ -100,6 +111,7 @@ public class PostGUI extends JComponent implements Runnable {
         userHomeContent.setLayout(new BorderLayout());
         userHomeContent.setSize(frame.getSize());  // set size of the content equal to that of the frame
         userHomeContent.add(new PostGUI(), BorderLayout.CENTER);
+
 
         // panel 1
         panel = new JPanel();
@@ -198,10 +210,10 @@ public class PostGUI extends JComponent implements Runnable {
                     String hour = time1[0];
                     String minute = time1[1];
                     time = date + " " + hour + ":" + minute;
-                    post = poster.createPost(user, contentTextArea.getText(), time);
+
+                    post = poster.createPost(user, contentTextArea.getText(), time, currentPosts.size());
                     newPost = new JPanel();
                     newPost.setLayout(new BorderLayout());
-
 
                     String title = user.getUsername() + ":" + user.getAlias() + time;
                     Border bor = BorderFactory.createTitledBorder(title);
@@ -209,9 +221,8 @@ public class PostGUI extends JComponent implements Runnable {
                     newPost.setBorder(bor);
                     newPost.add(label);
 
-                     newPost.add(editButton, BorderLayout.SOUTH);
-                     newsFeedHomeContent.add(newPost);
-
+                    postPanel.add(newPost);
+                    currentPosts.add(newPost);
                 }
 
             }
@@ -223,10 +234,25 @@ public class PostGUI extends JComponent implements Runnable {
                 yesNo = JOptionPane.showConfirmDialog(null, "Edit post?",
                         null, JOptionPane.YES_NO_OPTION);
                 if (yesNo == JOptionPane.YES_OPTION) {
-                    frame.getContentPane().remove(newPost);
-                    post = poster.editPost(user, post);
-                    newPost = new JPanel();
-                    newPost.setLayout(new BorderLayout());
+
+                   postPanel.removeAll();
+                   repaint();
+                   frame.getContentPane().revalidate();
+
+                   ArrayList<Post> userPosts = poster.readFromFile(user);
+                   String[] options = new String[userPosts.size()];
+                   int j = 1;
+                   for (Post post : userPosts) {
+                        options[j - 1] = j + ". " + post.getPostString();
+                        j++;
+                    }
+                    String whichPost =   (String) JOptionPane.showInputDialog(null, "Which post would you like to edit?",
+                            "Edit Post", JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+                    String[] postArray = whichPost.split(". ");
+                    int loc = poster.findPost(user, postArray[1]);
+                    post = poster.editPost(user, userPosts.get(loc));
+                    editedPost = new JPanel();
+                    editedPost.setLayout(new BorderLayout());
 
                     LocalDateTime time0 = LocalDateTime.now();
                     String timeString = time0.toString();
@@ -241,13 +267,39 @@ public class PostGUI extends JComponent implements Runnable {
                     String title = user.getUsername() + ":" + user.getAlias() + ":" + time;
                     Border bor = BorderFactory.createTitledBorder(title);
                     JLabel label = new JLabel(post.getPostString());
-                    newPost.setBorder(bor);
-                    newPost.add(label);
-                    newPost.add(editButton, BorderLayout.SOUTH);
-                    newsFeedHomeContent.add(newPost); //this doesn;t work yet
+
+                    editedPost.setBorder(bor);
+                    editedPost.add(label);
+
+                    currentPosts.set(post.getPanelLoc(), editedPost);
+                    JPanel currentPanel = new JPanel();
+                    currentPanel.setLayout(new GridLayout(0,1));
+                    for (JPanel panel : currentPosts) {
+                        currentPanel.add(panel);
+                    }
+                    postPanel.add(currentPanel);
+                    frame.getContentPane().revalidate();
+                    repaint();
 
                 }
+                else {
+                    return;
+                }
 
+            }
+        });
+
+        deleteButton.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e) {
+                yesNo = JOptionPane.showConfirmDialog(null, "Delete post?",
+                        null, JOptionPane.YES_NO_OPTION);
+                if (yesNo == YES_OPTION) {
+                    ArrayList<Post> userPosts= poster.readFromFile(user);
+                    JButton editPostButton;
+
+
+                }
             }
         });
 

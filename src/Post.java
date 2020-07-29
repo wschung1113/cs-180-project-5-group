@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 
 public class Post {
     /**
@@ -13,12 +14,14 @@ public class Post {
     private String name; //user's name that made the post
     private String postString; //text in post
     private String time; //time post was made
+    private int panelLoc;
     private static final int SIZE = 25; //limit to length of line
 
-    public Post(String name, String postString, String time) {
+    public Post(String name, String postString, String time, int panelLoc) {
         this.name = name; //name of user making post
         this.postString = formatPost(postString);
         this.time = time;
+        this.panelLoc = panelLoc;
     }
 
     /**
@@ -58,6 +61,15 @@ public class Post {
     public void setPostString(String postString) {
         this.postString = postString;
     }
+
+    public int getPanelLoc() {
+        return this.panelLoc;
+    }
+
+    public void setPanelLoc(int panelLoc) {
+        this.panelLoc = panelLoc;
+    }
+
 
     /**
      * formats post to fit within width

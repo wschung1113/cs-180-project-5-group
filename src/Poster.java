@@ -75,53 +75,30 @@ public class Poster {
         String minute = time1[1];
         String time = date + " " + hour + ":" + minute;
 
-        Post post = poster.createPost(user, string, time);
+        Post post = poster.createPost(user, string, time, 0);
         userPosts.add(post);
+        for (Post p: userPosts) {
+            System.out.println(p.getPostString());
+        }
         poster.writeToFile(userPosts);
         post = poster.editPost(user, post);
+        for (Post p : user.getPosts()) {
+            System.out.println(p.getPostString());
+        }
 
     }
 
-    public Post createPost(User user, String postString, String time) {
+    public Post createPost(User user, String postString, String time, int panelLoc) {
 
         //here is where I will figure out whether the user is valid
 
         String name = user.getAlias();
-        Post post = new Post(name, postString, time);
+        Post post = new Post(name, postString, time, panelLoc);
         ArrayList<Post> userPosts = user.getPosts();
         userPosts.add(post);
         user.setPosts(userPosts);
         writeToFile(userPosts);
         return post;
-        /**
-        String[] options = new String[3];
-        options[0] = "Yes, post!";
-        options[1] = "No, edit.";
-        options[2] = "No, cancel.";
-        int option = 0;
-
-        do {
-
-            int choice = JOptionPane.showOptionDialog(null, post.getPostString(), "Are you sure you want to post this?",
-                    JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, null);
-
-            if (choice == JOptionPane.YES_OPTION) {
-                //write post to gui
-                return post;
-
-            } else if (choice == JOptionPane.NO_OPTION) {
-                //edit post
-                String replacement = JOptionPane.showInputDialog(null, "Original Post :" + post.getPostString() + "\nNew Post:",
-                        "Edit post", JOptionPane.PLAIN_MESSAGE);
-
-            } else if (choice == JOptionPane.CANCEL_OPTION) {
-                return null;
-                //exit
-            } else {
-                return null;
-            }
-        } while (true);
-         */
 
 
     }
@@ -162,8 +139,9 @@ public class Poster {
 
         } while (choice != JOptionPane.YES_OPTION);
 
-        Post editedPost = new Post(postEdit.getName(), replacement, postEdit.getTime());
+        Post editedPost = new Post(postEdit.getName(), replacement, postEdit.getTime(), postEdit.getPanelLoc());
         userPosts.set(loc, editedPost);
+
         //writing to GUI
         writeToFile(userPosts);
         user.setPosts(userPosts);
@@ -253,11 +231,12 @@ public class Poster {
 
                 String name = postSplit[0];
                 String time = postSplit[1];
+                time += ":" + postSplit[2];
                 if (name.equals(user.getAlias())) {
-                    String postString = postSplit[2];
+                    String postString = postSplit[3];
                     postString = postString.substring(0, postString.length() - 1); //splitting semicolon off of end of line
 
-                    Post post = new Post(name, postString, time);
+                    Post post = new Post(name, postString, time, i);
                     userPosts.add(post);
                 }
                 i++;
@@ -269,5 +248,18 @@ public class Poster {
         }
 
         return null;
+    }
+
+    public int findPost(User user, String s) {
+
+        ArrayList<Post> userPosts= readFromFile(user);
+        int loc = 0;
+        for (Post post : userPosts) {
+            if (post.getPostString().equals(s)) {
+                return loc;
+            }
+            loc++;
+        }
+        return loc;
     }
 }
