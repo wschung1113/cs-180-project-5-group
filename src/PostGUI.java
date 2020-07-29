@@ -49,7 +49,7 @@ public class PostGUI extends JComponent implements Runnable {
     //for posts
     Post post; //post being written
     Poster poster; //for creating, editing, and deleting posts
-    User user; //user making a post
+    User user = new User("username", "password", "John Doe"); //user making a post
 
     // Icons
     Icon homeIcon = new ImageIcon("C:\\Users\\Me\\IdeaProjects\\Cs180Proj5Group\\home.png");
@@ -64,21 +64,6 @@ public class PostGUI extends JComponent implements Runnable {
 
         // edit button for posts
         editButton = new JButton("Edit");
-        editButton.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent e) {
-                yesNo = JOptionPane.showConfirmDialog(null, "Edit post?",
-                        null, JOptionPane.YES_NO_OPTION);
-                if (yesNo == JOptionPane.YES_OPTION) {
-                    post = poster.editPost(user, post);
-                    newPost = new JPanel();
-                    newPost.add(new JLabel(post.getPostString()));
-                    newPost.add(editButton);
-                }
-
-            }
-        });
-
 
         // newsFeedHomeContent
         newsFeedHomeContent = new Container();
@@ -150,6 +135,8 @@ public class PostGUI extends JComponent implements Runnable {
             }
         });
 
+
+
 //        nameLabel = new JLabel("username");  // should differ by each username
         nameButton = new JButton("username");
         nameButton.addActionListener(new ActionListener()
@@ -200,10 +187,9 @@ public class PostGUI extends JComponent implements Runnable {
                     // returns text to somewhere in contentTextArea
 
                     //this will be commented out until we can get access to user variable
-                     User user = new User("Username", "password", "John Doe");
-                     Poster poster = new Poster(user);
-                     Post post = poster.createPost(user, contentTextArea.getText());
-                     JPanel newPost = new JPanel();
+                     poster = new Poster(user);
+                     post = poster.createPost(user, contentTextArea.getText());
+                     newPost = new JPanel();
                      newPost.setLayout(new BorderLayout());
                      LocalDateTime time0 = LocalDateTime.now();
                      String timeString = time0.toString();
@@ -222,6 +208,38 @@ public class PostGUI extends JComponent implements Runnable {
 
                      newPost.add(editButton, BorderLayout.SOUTH);
                      newsFeedHomeContent.add(newPost);
+
+                }
+
+            }
+        });
+
+        editButton.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e) {
+                yesNo = JOptionPane.showConfirmDialog(null, "Edit post?",
+                        null, JOptionPane.YES_NO_OPTION);
+                if (yesNo == JOptionPane.YES_OPTION) {
+                    frame.getContentPane().remove(newPost);
+                    post = poster.editPost(user, post);
+                    newPost = new JPanel();
+                    newPost.setLayout(new BorderLayout());
+
+                    LocalDateTime time0 = LocalDateTime.now();
+                    String timeString = time0.toString();
+                    String[] timeArray = timeString.split("T");
+                    String date = timeArray[0];
+                    String[] time1 = timeArray[1].split(":");
+                    String hour = time1[0];
+                    String minute = time1[1];
+
+                    String title = user.getUsername() + ":" + user.getAlias() + ":" + date + " " + hour + ":" + minute + ":";
+                    Border bor = BorderFactory.createTitledBorder(title);
+                    JLabel label = new JLabel(post.getPostString());
+                    newPost.setBorder(bor);
+                    newPost.add(label);
+                    newPost.add(editButton, BorderLayout.SOUTH);
+                    newsFeedHomeContent.add(newPost); //this doesn;t work yet
 
                 }
 

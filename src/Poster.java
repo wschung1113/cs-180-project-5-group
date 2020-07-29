@@ -59,11 +59,15 @@ public class Poster {
     }
 
     public static void main(String[] args) {
+        ArrayList<Post> userPosts = new ArrayList<Post>();
 
         User user = new User("username", "password", "John Doe");
-        String string = "";
+        String string = "Hey there";
         Poster poster = new Poster(user);
-        poster.createPost(user, string);
+        Post post = poster.createPost(user, string);
+        userPosts.add(post);
+        poster.writeToFile(userPosts);
+        post = poster.editPost(user, post);
 
     }
 
@@ -73,6 +77,10 @@ public class Poster {
 
         String name = user.getAlias();
         Post post = new Post(name, postString);
+        ArrayList<Post> userPosts = user.getPosts();
+        userPosts.add(post);
+        user.setPosts(userPosts);
+        writeToFile(userPosts);
         return post;
         /**
         String[] options = new String[3];
@@ -110,7 +118,7 @@ public class Poster {
     public Post editPost(User user, Post postEdit) {
         //this method assumes that the user has already selected which post to edit
 
-        ArrayList<Post> userPosts = readFromFile(user);
+        ArrayList<Post> userPosts = user.getPosts();
         String replacement = "";
         int loc = 0;
         int i = 0;
@@ -131,10 +139,10 @@ public class Poster {
 
         do {
 
-            replacement = JOptionPane.showInputDialog(null, "Original Post :" + postEdit.getPostString() + "\nNew Post:",
+            replacement = JOptionPane.showInputDialog(null, "Original Post: " + postEdit.getPostString() + "\nNew Post:",
                     "Edit post", JOptionPane.PLAIN_MESSAGE);
 
-            choice = JOptionPane.showOptionDialog(null, postOriginal, "Are you sure you want to post this?",
+            choice = JOptionPane.showOptionDialog(null, replacement, "Are you sure you want to post this?",
                     JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, null);
 
             if (choice == JOptionPane.CANCEL_OPTION) {
@@ -147,6 +155,7 @@ public class Poster {
         userPosts.set(loc, editedPost);
         //writing to GUI
         writeToFile(userPosts);
+        user.setPosts(userPosts);
 
         //need to determine whether we are storing posts with user or elsewhere
         return editedPost;
@@ -176,8 +185,9 @@ public class Poster {
             userPosts.set(i, userPosts.get(i + 1));
         }
         writeToFile(userPosts);
+        user.setPosts(userPosts);
 
-        //make it so it's no longer visible here
+        //still need to make it so it's no longer visible
     }
 
     public void writeToFile(ArrayList<Post> userPosts) {
@@ -229,7 +239,7 @@ public class Poster {
                 String[] postSplit = s.split(":"); //info before colon is name, after is postString
 
                 String name = postSplit[0];
-                if (name.equals("userName")) {
+                if (name.equals(user.getAlias())) {
                     String postString = postSplit[1];
                     postString = postString.substring(0, postString.length() - 1); //splitting semicolon off of end of line
 
