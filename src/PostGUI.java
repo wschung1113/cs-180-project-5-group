@@ -251,41 +251,41 @@ public class PostGUI extends JComponent implements Runnable {
                     String[] postArray = whichPost.split(". ");
                     int loc = poster.findPost(user, postArray[1]);
                     post = poster.editPost(user, userPosts.get(loc));
-                    editedPost = new JPanel();
-                    editedPost.setLayout(new BorderLayout());
+                    if (post != null) {
 
-                    LocalDateTime time0 = LocalDateTime.now();
-                    String timeString = time0.toString();
-                    String[] timeArray = timeString.split("T");
-                    String date = timeArray[0];
 
-                    String[] time1 = timeArray[1].split(":");
-                    String hour = time1[0];
-                    String minute = time1[1];
-                    time = date + " " + hour + ":" + minute;
+                        editedPost = new JPanel();
+                        editedPost.setLayout(new BorderLayout());
 
-                    String title = user.getUsername() + ":" + user.getAlias() + ":" + time;
-                    Border bor = BorderFactory.createTitledBorder(title);
-                    JLabel label = new JLabel(post.getPostString());
+                        LocalDateTime time0 = LocalDateTime.now();
+                        String timeString = time0.toString();
+                        String[] timeArray = timeString.split("T");
+                        String date = timeArray[0];
 
-                    editedPost.setBorder(bor);
-                    editedPost.add(label);
+                        String[] time1 = timeArray[1].split(":");
+                        String hour = time1[0];
+                        String minute = time1[1];
+                        time = date + " " + hour + ":" + minute;
 
-                    currentPosts.set(post.getPanelLoc(), editedPost);
-                    JPanel currentPanel = new JPanel();
-                    currentPanel.setLayout(new GridLayout(0,1));
-                    for (JPanel panel : currentPosts) {
-                        currentPanel.add(panel);
+                        String title = user.getUsername() + ":" + user.getAlias() + ":" + time;
+                        Border bor = BorderFactory.createTitledBorder(title);
+                        JLabel label = new JLabel(post.getPostString());
+
+                        editedPost.setBorder(bor);
+                        editedPost.add(label);
+
+                        currentPosts.set(post.getPanelLoc(), editedPost);
+                        JPanel currentPanel = new JPanel();
+                        currentPanel.setLayout(new GridLayout(0, 1));
+                        for (JPanel panel : currentPosts) {
+                            currentPanel.add(panel);
+                        }
+                        postPanel.add(currentPanel);
+                        frame.getContentPane().revalidate();
+                        repaint();
                     }
-                    postPanel.add(currentPanel);
-                    frame.getContentPane().revalidate();
-                    repaint();
 
                 }
-                else {
-                    return;
-                }
-
             }
         });
 
@@ -295,9 +295,30 @@ public class PostGUI extends JComponent implements Runnable {
                 yesNo = JOptionPane.showConfirmDialog(null, "Delete post?",
                         null, JOptionPane.YES_NO_OPTION);
                 if (yesNo == YES_OPTION) {
+                    postPanel.removeAll();
                     ArrayList<Post> userPosts= poster.readFromFile(user);
                     JButton editPostButton;
-
+                    String[] options = new String[userPosts.size()];
+                    int j = 1;
+                    for (Post post : userPosts) {
+                        options[j - 1] = j + ". " + post.getPostString();
+                        j++;
+                    }
+                    String whichPost =   (String) JOptionPane.showInputDialog(null, "Which post would you like to delete?",
+                            "Delete Post", JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+                    String[] postSplit = whichPost.split(". ");
+                    int loc = poster.findPost(user, postSplit[1]);
+                    currentPosts.remove(userPosts.get(loc).getPanelLoc());
+                    userPosts.remove(loc);
+                    JPanel currentPanel = new JPanel();
+                    currentPanel.setLayout(new GridLayout(0,1));
+                    for (JPanel panel : currentPosts) {
+                        currentPanel.add(panel);
+                    }
+                    poster.writeToFile(userPosts);
+                    postPanel.add(currentPanel);
+                    frame.getContentPane().revalidate();
+                    repaint();
 
                 }
             }

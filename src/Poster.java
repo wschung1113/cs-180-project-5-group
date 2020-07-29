@@ -130,8 +130,13 @@ public class Poster {
             replacement = JOptionPane.showInputDialog(null, "Original Post: " + postEdit.getPostString() + "\nNew Post:",
                     "Edit post", JOptionPane.PLAIN_MESSAGE);
 
-            choice = JOptionPane.showOptionDialog(null, replacement, "Are you sure you want to post this?",
-                    JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, null);
+            if (replacement != null && replacement != "") {
+
+                choice = JOptionPane.showOptionDialog(null, replacement, "Are you sure you want to post this?",
+                        JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, null);
+            } else {
+                return null;
+            }
 
             if (choice == JOptionPane.CANCEL_OPTION) {
                 return null;
