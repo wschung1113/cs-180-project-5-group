@@ -195,11 +195,11 @@ public class Poster {
 
                 StringBuilder sb = new StringBuilder();
             sb.append(post.getName());
-            sb.append(":");
+            sb.append(";:;");
             sb.append(post.getTime());
-            sb.append(":");
+            sb.append(";:;");
             sb.append(post.getPostString());
-            sb.append(";\n");
+            sb.append(";;;\n");
 
             pw.write(sb.toString());
         }
@@ -232,14 +232,14 @@ public class Poster {
 
             for (String s : postStrings) {
 
-                String[] postSplit = s.split(":"); //info before colon is name, after is postString
+                String[] postSplit = s.split(";:;"); //info before colon is name, after is postString
 
                 String name = postSplit[0];
                 String time = postSplit[1];
-                time += ":" + postSplit[2];
+
                 if (name.equals(user.getAlias())) {
-                    String postString = postSplit[3];
-                    postString = postString.substring(0, postString.length() - 1); //splitting semicolon off of end of line
+                    String postString = postSplit[2];
+                    postString = postString.substring(0, postString.length() - 3); //splitting semicolon off of end of line
 
                     Post post = new Post(name, postString, time, i);
                     userPosts.add(post);

@@ -48,7 +48,9 @@ public class PostGUI extends JComponent implements Runnable {
     JButton homeButton;  // switches to newsFeedHomeContent
     JButton writeCommentButton;  // "writes" comment in the commentTestField
     JButton editButton;  //allows user to edit a post
+    JButton editHomeButton; //allows user to edit post in user profile
     JButton deleteButton; //allows user to delete a post
+    JButton deleteHomeButton; //allows user to delete post in user profile
 
     //for posts
     Post post; //post being written
@@ -69,6 +71,8 @@ public class PostGUI extends JComponent implements Runnable {
         // edit button for posts
         editButton = new JButton("Edit a Post");
         deleteButton = new JButton("Delete a Post");
+        editHomeButton = new JButton("Edit a Post");
+        deleteHomeButton = new JButton("Delete a Post");
 
         // newsFeedHomeContent
         newsFeedHomeContent = new Container();
@@ -116,6 +120,11 @@ public class PostGUI extends JComponent implements Runnable {
         // panel 1
         panel = new JPanel();
         userHomeContent.add(panel, BorderLayout.CENTER);
+        buttonPanel = new JPanel();
+        buttonPanel.setLayout(new GridLayout(1,2));
+        buttonPanel.add(editHomeButton);
+        buttonPanel.add(deleteHomeButton);
+        userHomeContent.add(buttonPanel, BorderLayout.SOUTH);
 
 
         // postContent
@@ -147,6 +156,7 @@ public class PostGUI extends JComponent implements Runnable {
                 }
             }
         });
+
 
 
 
@@ -200,7 +210,7 @@ public class PostGUI extends JComponent implements Runnable {
                     // returns text to somewhere in contentTextArea
 
                     //this will be commented out until we can get access to user variable
-                     poster = new Poster(user);
+                    poster = new Poster(user);
                     LocalDateTime time0 = LocalDateTime.now();
                     String timeString = time0.toString();
                     String[] timeArray = timeString.split("T");
@@ -228,8 +238,8 @@ public class PostGUI extends JComponent implements Runnable {
             }
         });
 
-        editButton.addActionListener(new ActionListener()
-        {
+        ActionListener editAction = new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 yesNo = JOptionPane.showConfirmDialog(null, "Edit post?",
                         null, JOptionPane.YES_NO_OPTION);
@@ -243,14 +253,21 @@ public class PostGUI extends JComponent implements Runnable {
                    String[] options = new String[userPosts.size()];
                    int j = 1;
                    for (Post post : userPosts) {
-                        options[j - 1] = j + ". " + post.getPostString();
+                        options[j - 1] = j + ": " + post.getPostString();
                         j++;
                     }
                     String whichPost =   (String) JOptionPane.showInputDialog(null, "Which post would you like to edit?",
                             "Edit Post", JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
-                    String[] postArray = whichPost.split(". ");
-                    int loc = poster.findPost(user, postArray[1]);
-                    post = poster.editPost(user, userPosts.get(loc));
+
+                    String option = whichPost.substring(3, whichPost.length());
+                    int loc = poster.findPost(user, option);
+                    if (loc >= userPosts.size()) {
+                        JOptionPane.showMessageDialog(null, "This post is not available for editing!",
+                                "Error", JOptionPane.ERROR_MESSAGE);
+                        post = null;
+                    } else {
+                        post = poster.editPost(user, userPosts.get(loc));
+                    }
                     if (post != null) {
 
 
@@ -287,9 +304,12 @@ public class PostGUI extends JComponent implements Runnable {
 
                 }
             }
-        });
+        };
 
-        deleteButton.addActionListener(new ActionListener()
+        editButton.addActionListener(editAction);
+        editHomeButton.addActionListener(editAction);
+
+        ActionListener deleteAction = new ActionListener()
         {
             public void actionPerformed(ActionEvent e) {
                 yesNo = JOptionPane.showConfirmDialog(null, "Delete post?",
@@ -301,28 +321,37 @@ public class PostGUI extends JComponent implements Runnable {
                     String[] options = new String[userPosts.size()];
                     int j = 1;
                     for (Post post : userPosts) {
-                        options[j - 1] = j + ". " + post.getPostString();
+                        options[j - 1] = j + ": " + post.getPostString();
                         j++;
                     }
                     String whichPost =   (String) JOptionPane.showInputDialog(null, "Which post would you like to delete?",
                             "Delete Post", JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
-                    String[] postSplit = whichPost.split(". ");
-                    int loc = poster.findPost(user, postSplit[1]);
-                    currentPosts.remove(userPosts.get(loc).getPanelLoc());
-                    userPosts.remove(loc);
-                    JPanel currentPanel = new JPanel();
-                    currentPanel.setLayout(new GridLayout(0,1));
-                    for (JPanel panel : currentPosts) {
-                        currentPanel.add(panel);
+                    String option = whichPost.substring(3, whichPost.length());
+                    int loc = poster.findPost(user, option);
+                    if (loc >= userPosts.size()) {
+                        JOptionPane.showMessageDialog(null, "This post is not available for editing!",
+                                "Error", JOptionPane.ERROR_MESSAGE);
+                    } else {
+
+
+                        currentPosts.remove(userPosts.get(loc).getPanelLoc());
+                        userPosts.remove(loc);
+                        JPanel currentPanel = new JPanel();
+                        currentPanel.setLayout(new GridLayout(0, 1));
+                        for (JPanel panel : currentPosts) {
+                            currentPanel.add(panel);
+                        }
+                        poster.writeToFile(userPosts);
+                        postPanel.add(currentPanel);
+                        frame.getContentPane().revalidate();
+                        repaint();
                     }
-                    poster.writeToFile(userPosts);
-                    postPanel.add(currentPanel);
-                    frame.getContentPane().revalidate();
-                    repaint();
 
                 }
             }
-        });
+        };
+        deleteButton.addActionListener(deleteAction);
+        deleteHomeButton.addActionListener(deleteAction);
 
 //        commentButton = new JButton("Comments");
 //        commentButton.addActionListener(new ActionListener()
