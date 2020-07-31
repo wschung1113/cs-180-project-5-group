@@ -283,6 +283,8 @@ public class PostGUI extends JComponent implements Runnable {
 
                 frame.getContentPane().add(postContent);
 
+                contentTextArea.setText("");
+
                 frame.repaint();
 
                 frame.revalidate();
@@ -295,6 +297,8 @@ public class PostGUI extends JComponent implements Runnable {
                 frame.getContentPane().removeAll();  // or removeAll();
 
                 frame.getContentPane().add(postContent);
+
+                contentTextArea.setText("");
 
                 frame.repaint();
 
@@ -467,7 +471,7 @@ public class PostGUI extends JComponent implements Runnable {
         loginFrame.setTitle("Login page");
         loginFrame.setLocationRelativeTo(null);
         loginFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        loginFrame.setVisible(true);
+//        loginFrame.setVisible(true);
         loginPage = loginFrame.getContentPane();
         loginPage.setLayout(new BorderLayout());
         loginPage.setSize(loginFrame.getSize());
@@ -489,7 +493,7 @@ public class PostGUI extends JComponent implements Runnable {
         // final step
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-//        frame.setVisible(true);  // so that loginPage is default
+        frame.setVisible(true);  // so that loginPage is default
     }
 
     public PostGUI() {  // constructor
