@@ -236,9 +236,8 @@ public class PostGUI extends JComponent implements Runnable {
                 yesNo = JOptionPane.showConfirmDialog(null, "Delete post?",
                         null, JOptionPane.YES_NO_OPTION);
                 if (yesNo == YES_OPTION) {
-                    postPanel.removeAll();
+                    postPanel.removeAll(); //removes all posts
                     ArrayList<Post> userPosts= poster.readFromFile(user);
-                    JButton editPostButton;
                     String[] options = new String[userPosts.size()];
                     int j = 1;
                     for (Post post : userPosts) {
@@ -249,14 +248,17 @@ public class PostGUI extends JComponent implements Runnable {
                             "Delete Post", JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
                     String option = whichPost.substring(3, whichPost.length());
                     int loc = poster.findPost(user, option);
+
                     if (loc >= userPosts.size()) {
-                        JOptionPane.showMessageDialog(null, "This post is not available for editing!",
+                        JOptionPane.showMessageDialog(null, "This post is not available for deleting!",
                                 "Error", JOptionPane.ERROR_MESSAGE);
                     } else {
-
-
                         currentPosts.remove(userPosts.get(loc).getPanelLoc());
                         userPosts.remove(loc);
+                        for (int i = 0; i < currentPosts.size(); i++) {
+                            userPosts.get(i).setPanelLoc(i);
+                        }
+
                         JPanel currentPanel = new JPanel();
                         currentPanel.setLayout(new GridLayout(0, 1));
                         for (JPanel panel : currentPosts) {
@@ -432,11 +434,11 @@ public class PostGUI extends JComponent implements Runnable {
                     String minute = time1[1];
                     time = date + " " + hour + ":" + minute;
 
-                    post = poster.createPost(user, contentTextArea.getText(), time, currentPosts.size());
+                    post = poster.createPost(user, contentTextArea.getText(), time0, time, currentPosts.size());
                     newPost = new JPanel();
                     newPost.setLayout(new BorderLayout());
 
-                    String title = user.getUsername() + ":" + user.getAlias() + time;
+                    String title = user.getUsername() + ":" + user.getAlias() + ":" + time;
                     Border bor = BorderFactory.createTitledBorder(title);
                     JLabel label = new JLabel(post.getPostString());
                     newPost.setBorder(bor);
@@ -467,7 +469,7 @@ public class PostGUI extends JComponent implements Runnable {
         loginFrame.setTitle("Login page");
         loginFrame.setLocationRelativeTo(null);
         loginFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        loginFrame.setVisible(true);
+        //loginFrame.setVisible(true);
         loginPage = loginFrame.getContentPane();
         loginPage.setLayout(new BorderLayout());
         loginPage.setSize(loginFrame.getSize());
@@ -489,7 +491,7 @@ public class PostGUI extends JComponent implements Runnable {
         // final step
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-//        frame.setVisible(true);  // so that loginPage is default
+        frame.setVisible(true);  // so that loginPage is default
     }
 
     public PostGUI() {  // constructor
