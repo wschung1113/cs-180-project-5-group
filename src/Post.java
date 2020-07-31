@@ -119,7 +119,6 @@ public class Post {
                     posts.set(j, (posts.get(j + 1)));
                     posts.set(j + 1, temp);
                 }
-
             }
         }
 
