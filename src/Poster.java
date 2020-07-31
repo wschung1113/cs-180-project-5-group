@@ -226,7 +226,7 @@ public class Poster {
                 String time = postSplit[2];
 
                 if (name.equals(user.getAlias())) {
-                    String postString = postSplit[2];
+                    String postString = postSplit[3];
                     postString = postString.substring(0, postString.length() - 3); //splitting semicolon off of end of line
 
                     Post post = new Post(name, postString, time0 , time, i);

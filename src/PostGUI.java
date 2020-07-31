@@ -179,6 +179,7 @@ public class PostGUI extends JComponent implements Runnable {
                     int j = 1;
                     for (Post post : userPosts) {
                         options[j - 1] = j + ": " + post.getPostString();
+                        System.out.println(options[j - 1]);
                         j++;
                     }
                     String whichPost =   (String) JOptionPane.showInputDialog(null, "Which post would you like to edit?",
@@ -238,7 +239,6 @@ public class PostGUI extends JComponent implements Runnable {
                 if (yesNo == YES_OPTION) {
                     postPanel.removeAll();
                     ArrayList<Post> userPosts= poster.readFromFile(user);
-                    JButton editPostButton;
                     String[] options = new String[userPosts.size()];
                     int j = 1;
                     for (Post post : userPosts) {
@@ -436,7 +436,7 @@ public class PostGUI extends JComponent implements Runnable {
                     String minute = time1[1];
                     time = date + " " + hour + ":" + minute;
 
-                    post = poster.createPost(user, contentTextArea.getText(), time, currentPosts.size());
+                    post = poster.createPost(user, contentTextArea.getText(), time0, time, currentPosts.size());
                     newPost = new JPanel();
                     newPost.setLayout(new BorderLayout());
 
