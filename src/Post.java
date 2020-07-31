@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.time.*;
 
 public class Post {
     /**
@@ -13,13 +14,15 @@ public class Post {
      */
     private String name; //user's name that made the post
     private String postString; //text in post
-    private String time; //time post was made
+    private LocalDateTime time0; //time post was made
+    private String time; //String version of time post was made
     private int panelLoc;
     private static final int SIZE = 25; //limit to length of line
 
-    public Post(String name, String postString, String time, int panelLoc) {
+    public Post(String name, String postString, LocalDateTime time0, String time, int panelLoc) {
         this.name = name; //name of user making post
         this.postString = formatPost(postString);
+        this.time0 = time0;
         this.time = time;
         this.panelLoc = panelLoc;
     }
@@ -43,9 +46,12 @@ public class Post {
         return postString;
     }
 
+    public LocalDateTime getTime0() {return time0;}
+
     /**
      * returns time post was made
      * @return String, time post was made
+     *
      */
     public String getTime() {
         return time;
@@ -97,5 +103,26 @@ public class Post {
         }
 
         return format;
+    }
+
+    //this is a bubble sort (learned about these in CS159)
+    public static ArrayList<Post> sortPosts(ArrayList<Post> posts) {
+        String timePost;
+        String[] timeArray;
+        int length = posts.size();
+        Post temp;
+
+        for (int i = length - 1; i > 0; i--) {
+            for (int j = 0; j < i; j++) {
+                if (posts.get(j).getTime0().isAfter(posts.get(j + 1).getTime0())) {
+                    temp = posts.get(j);
+                    posts.set(j, (posts.get(j + 1)));
+                    posts.set(j + 1, temp);
+                }
+
+            }
+        }
+
+        return posts;
     }
 }

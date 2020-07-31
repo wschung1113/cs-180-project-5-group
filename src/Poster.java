@@ -1,5 +1,6 @@
 import javax.swing.JOptionPane;
 import java.io.*;
+import java.sql.Time;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
@@ -63,37 +64,21 @@ public class Poster {
         ArrayList<Post> userPosts = new ArrayList<Post>();
 
         User user = new User("username", "password", "John Doe");
-        String string = "Hey there";
-        Poster poster = new Poster(user);
-        LocalDateTime time0 = LocalDateTime.now();
-        String timeString = time0.toString();
-        String[] timeArray = timeString.split("T");
-        String date = timeArray[0];
+        Post post1 = new Post("use1", "pass1", LocalDateTime.now(), "16:00", 2);
+        Post post2 = new Post("use2", "pass2", LocalDateTime.now(), "15:00", 3);
+        userPosts.add(post2);
 
-        String[] time1 = timeArray[1].split(":");
-        String hour = time1[0];
-        String minute = time1[1];
-        String time = date + " " + hour + ":" + minute;
-
-        Post post = poster.createPost(user, string, time, 0);
-        userPosts.add(post);
-        for (Post p: userPosts) {
-            System.out.println(p.getPostString());
-        }
-        poster.writeToFile(userPosts);
-        post = poster.editPost(user, post);
-        for (Post p : user.getPosts()) {
-            System.out.println(p.getPostString());
-        }
+        userPosts.add(post1);
+        userPosts = Post.sortPosts(userPosts);
 
     }
 
-    public Post createPost(User user, String postString, String time, int panelLoc) {
+    public Post createPost(User user, String postString, LocalDateTime time0, String time, int panelLoc) {
 
         //here is where I will figure out whether the user is valid
 
         String name = user.getAlias();
-        Post post = new Post(name, postString, time, panelLoc);
+        Post post = new Post(name, postString, time0, time, panelLoc);
         ArrayList<Post> userPosts = user.getPosts();
         userPosts.add(post);
         user.setPosts(userPosts);
@@ -144,7 +129,7 @@ public class Poster {
 
         } while (choice != JOptionPane.YES_OPTION);
 
-        Post editedPost = new Post(postEdit.getName(), replacement, postEdit.getTime(), postEdit.getPanelLoc());
+        Post editedPost = new Post(postEdit.getName(), replacement, postEdit.getTime0(), postEdit.getTime(), postEdit.getPanelLoc());
         userPosts.set(loc, editedPost);
 
         //writing to GUI
@@ -196,6 +181,8 @@ public class Poster {
                 StringBuilder sb = new StringBuilder();
             sb.append(post.getName());
             sb.append(";:;");
+            sb.append(post.getTime0());
+            sb.append(";:;");
             sb.append(post.getTime());
             sb.append(";:;");
             sb.append(post.getPostString());
@@ -235,13 +222,14 @@ public class Poster {
                 String[] postSplit = s.split(";:;"); //info before colon is name, after is postString
 
                 String name = postSplit[0];
-                String time = postSplit[1];
+                LocalDateTime time0 = LocalDateTime.parse(postSplit[1]);
+                String time = postSplit[2];
 
                 if (name.equals(user.getAlias())) {
                     String postString = postSplit[2];
                     postString = postString.substring(0, postString.length() - 3); //splitting semicolon off of end of line
 
-                    Post post = new Post(name, postString, time, i);
+                    Post post = new Post(name, postString, time0 , time, i);
                     userPosts.add(post);
                 }
                 i++;

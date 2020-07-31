@@ -39,6 +39,10 @@ public class LoginGUI extends JComponent implements Runnable {
         info = new ArrayList<>();
     }
 
+    public ArrayList<String> getInfo() {
+        return info;
+    }
+
     ActionListener actionListener = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -112,9 +116,9 @@ public class LoginGUI extends JComponent implements Runnable {
         loginPage.add(panel1, BorderLayout.CENTER);
     }
 
-    public static void main(String[] args) {
+    public void guicaller(LoginGUI loginGUI) {
         // connections
-        SwingUtilities.invokeLater(new LoginGUI());
+        SwingUtilities.invokeLater(loginGUI);
     }
 
 }
