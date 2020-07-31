@@ -2,8 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class LoginGUI extends JComponent implements Runnable {
@@ -47,22 +46,58 @@ public class LoginGUI extends JComponent implements Runnable {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == login) {
-                info.add(username.getText());
-                info.add(password.getText());
+                Client client = new Client(username.getText() + "," + password.getText());
+                try {
+                    if (client.connect() == true) { //Client connects to server, check whether user is registered
+                        JOptionPane.showMessageDialog(null, "You are logged in!");
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Incorrect username or password");
+                    }
+                    return;
+                } catch (IOException | ClassNotFoundException ioException) {
+                    ioException.printStackTrace();
+                }
             }
-            if (e.getSource() == enter) {
-                info.add(username.getText());
-                info.add(password.getText());
-                info.add(alias.getText());
+            if (e.getSource() == enter) { //Client connects to server, check whether there is a duplicate user
+                Client client = new Client(username.getText() + "," + password.getText() + "," + alias.getText() + ",");
+                try {
+                    if (client.connect() == false) {
+                        JOptionPane.showMessageDialog(null, "You are registered an login");
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Account existed");
+                    }
+                    return;
+                } catch (IOException | ClassNotFoundException ioException) {
+                    ioException.printStackTrace();
+                }
             }
             if (e.getSource() == back) {
                 frame1.setVisible(false);
-                frame1.dispose();
-                run();
+                frame = new JFrame();
+                frame.setSize(450, 100);
+                frame.setTitle("Login page");
+                frame.setLocationRelativeTo(null);
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.setVisible(true);
+                loginPage = frame.getContentPane();
+                loginPage.setLayout(new BorderLayout());
+                loginPage.setSize(frame.getSize());
+                JPanel panel = new JPanel();
+                panel.add(usernameLabel);
+                panel.add(username);
+                panel.add(passwordLabel);
+                panel.add(password);
+                JPanel panel1 = new JPanel();
+                login.addActionListener(actionListener);
+                register.addActionListener(actionListener);
+                enter.addActionListener(actionListener);
+                panel1.add(login);
+                panel1.add(register);
+                loginPage.add(panel, BorderLayout.NORTH);
+                loginPage.add(panel1, BorderLayout.CENTER);
             }
             if (e.getSource() == register) {
                 frame.setVisible(false);
-                frame.dispose();
                 frame1 = new JFrame();
                 frame1.setSize(600, 100);
                 frame1.setTitle("Sign up page");
@@ -116,9 +151,8 @@ public class LoginGUI extends JComponent implements Runnable {
         loginPage.add(panel1, BorderLayout.CENTER);
     }
 
-    public void guicaller(LoginGUI loginGUI) {
-        // connections
-        SwingUtilities.invokeLater(loginGUI);
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new LoginGUI());
     }
 
 }
