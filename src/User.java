@@ -4,7 +4,7 @@ public class User {
     String username;
     String password;
     String alias;
-    ArrayList<String> posts;
+    ArrayList<Post> posts;
 
     public User(String username, String password, String alias) {
         this.username = username;
@@ -42,11 +42,11 @@ public class User {
         this.alias = alias;
     }
 
-    public ArrayList<String> getPosts() {
+    public ArrayList<Post> getPosts() {
         return posts;
     }
 
-    public void setPosts(ArrayList<String> posts) {
+    public void setPosts(ArrayList<Post> posts) {
         this.posts = posts;
     }
 }
