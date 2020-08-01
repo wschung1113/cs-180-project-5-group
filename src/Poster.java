@@ -61,6 +61,8 @@ public class Poster {
         return fileName;
     }
 
+    public void setFileName(String fileName) { this.fileName = fileName;}
+
     public static void main(String[] args) {
         //for local test cases
         ArrayList<Post> userPosts = new ArrayList<Post>();
@@ -80,7 +82,7 @@ public class Poster {
         String hour = time1[0];
         String minute = time1[1];
         String time = date + " " + hour + ":" + minute;
-        Post post = new Post(user.getAlias(), postString, time0, time, userPosts.size());
+        Post post = new Post(user.getAlias(), postString, time0, time, 0);
         if (choice.equals("create")) {
 
             System.out.println(post.getPostString());
@@ -89,15 +91,30 @@ public class Poster {
             System.out.println(post1.getPostString());
             Post post2 = userPosts.get(post1.getPanelLoc());
             System.out.println(post2.getPostString());
-        } else if (choice.equals("edit")) {
+        } else if (choice.equals("read")) {
+            ArrayList<Post> posts = poster.readFromFile(user);
+            posts.add(post);
+            System.out.println(posts.get(0).getPostString());
+        } else if (choice.equals("write")) {
+            ArrayList<Post> posts = poster.readFromFile(user);
+            poster.writeToFile(posts);
+            System.out.println(posts.get(0).getPostString());
+        } else if (choice.equals("readInvalid")) {
             poster.createPost(user, postString, time0, time, userPosts.size());
-            poster.editPost(user, post);
-            System.out.println(user.getPosts().get(post.getPanelLoc()).getPostString());
-        } else if (choice.equals("delete")) {
-            poster.deletePost(user, post.getPostString());
-            if (user.getPosts().size() == 0) {
-                System.out.println("Deleted post successfully");
-            }
+            poster.setFileName("Invalid.txt");
+            poster.readFromFile(user);
+        } else if (choice.equals("writeInvalid")) {
+            post = poster.createPost(user, postString, time0, time, userPosts.size());
+            poster.setFileName("Invalid.txt");
+            ArrayList<Post> posts = new ArrayList<Post>();
+            posts.add(post);
+            poster.writeToFile(posts);
+        } else if (choice.equals("findPost")) {
+            int loc = poster.findPost(user, "this is a test");
+            System.out.println(loc);
+        } else if (choice.equals("invalidPost")) {
+            int loc = poster.findPost(user, "invalid");
+            System.out.println(loc);
         }
 
     }
@@ -220,7 +237,7 @@ public class Poster {
 
             pw.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Error writing to file. That file does not exist.");
         }
     }
 
@@ -264,7 +281,7 @@ public class Poster {
             user.setPosts(userPosts);
             return userPosts;
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Error reading from file. That file does not exist.");
         }
 
         return null;

@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.time.*;
+import java.util.Scanner;
 
 public class Post {
     /**
@@ -134,4 +135,40 @@ public class Post {
 
         return posts;
     }
+
+    public static void main(String[] args) {
+        User user = new User("userName", "password", "John Doe");
+        Scanner scanner = new Scanner(System.in);
+        ArrayList<Post> posts = new ArrayList<Post>();
+        Poster poster = new Poster(user);
+        String postS = scanner.nextLine();
+        String postS1 = scanner.nextLine();
+        LocalDateTime time0 = LocalDateTime.now();
+        String timeString = time0.toString();
+        String[] timeArray = timeString.split("T");
+        String date = timeArray[0];
+
+        String[] time1a = timeArray[1].split(":");
+        String hour = time1a[0];
+        String minute = time1a[1];
+        String time = date + " " + hour + ":" + minute;
+        Post post = poster.createPost(user, postS, time0, time, 0);
+        LocalDateTime time1 = LocalDateTime.now();
+        String timeString1 = time1.toString();
+        String[] timeArray1 = timeString.split("T");
+        String date1 = timeArray[0];
+
+        String[] time2 = timeArray[1].split(":");
+        String hour1 = time2[0];
+        String minute1 = time2[1];
+        String time3 = date1 + " " + hour1 + ":" + minute1;
+        Post post1 = poster.createPost(user, postS1, time1, time3, 1);
+        posts.add(post1);
+        posts.add(post);
+        posts = Post.sortPosts(posts);
+        System.out.println(posts.get(0).getPostString());
+
+    }
+
+
 }
