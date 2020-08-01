@@ -15,27 +15,31 @@ public class Client {
         this.message = message;
     }
 
-    public boolean connect () throws IOException, ClassNotFoundException {
+    public boolean connect() throws IOException, ClassNotFoundException {
         Socket socket = new Socket("localhost", 4242);
         BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         PrintWriter writer = new PrintWriter(socket.getOutputStream());
+
         writer.write(message);
         writer.println();
         writer.flush(); // ensure data is sent to the server
 
         //Receive
         int c;
-        String response = "";
+        StringBuilder response = new StringBuilder();
         while ((c = reader.read()) != -1) {
-            response += (char) c;
+            response.append((char) c);
         }
-        System.out.println(response);
-        if (response.contains("user is registered")) {
+
+//        System.out.println(response);
+
+        if (response.toString().contains("Correct") || response.toString().contains("Registered")) {
             return true;
         }
-        if (response.contains("no such user")) {
+        if (response.toString().contains("Incorrect") || response.toString().contains("Existed")) {
             return false;
         }
+
         writer.close();
         reader.close();
         return false;
