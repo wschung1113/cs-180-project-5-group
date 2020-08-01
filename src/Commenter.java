@@ -17,7 +17,7 @@ public class Commenter {
     //JTextField reply1;
     //Implement imp;
     int numcom = 0;
-    ArrayList<comment> commentsOnPostList = new ArrayList<>();
+    ArrayList<Comment> commentsOnPostList = new ArrayList<>();
     ArrayList<JButton> commentLikeButton = new ArrayList<>();
     ArrayList<JButton> commentEditButton = new ArrayList<>();
     ArrayList<JButton> commentDeleteButton = new ArrayList<>();
@@ -41,7 +41,7 @@ public class Commenter {
 
     public JPanel createComment(String comtext, String Time, User user) {
         numcom++;
-        comment temp = new comment(user.getAlias(), comtext,0, Time );
+        Comment temp = new Comment(user.getAlias(), comtext,0, Time );
         commentsOnPostList.add(temp);
         JLabel label = new JLabel(temp.toString());
 
@@ -75,7 +75,7 @@ public class Commenter {
     }
 
     //Mackenna please advise on how you want the comments and post content to be written to the same file together
-    public void writeToFile(ArrayList<comment> commentsOnPostList) {
+    public void writeToFile(ArrayList<Comment> commentsOnPostList) {
 
         try {
             File f = new File(fileName);
@@ -83,7 +83,7 @@ public class Commenter {
             PrintWriter pw = new PrintWriter(fos);
 
             for (int i = 0; i < commentsOnPostList.size(); i++) {
-                comment temp = new comment();
+                Comment temp = new Comment();
                 temp = commentsOnPostList.get(i);
 //                if(i!=0) {
 //                    pw.printf("-");
@@ -103,8 +103,8 @@ public class Commenter {
         }
     }
 
-    public ArrayList<comment> readFromFile(User user) throws FileNotFoundException {
-        ArrayList<comment> temporaryCom = new ArrayList<>();
+    public ArrayList<Comment> readFromFile(User user) throws FileNotFoundException {
+        ArrayList<Comment> temporaryCom = new ArrayList<>();
         File f = new File(fileName);
         FileReader fr = new FileReader(f);
         //Book temporary = new Book;
@@ -119,7 +119,7 @@ public class Commenter {
                 line = line.replace("[", "");
                 line = line.replace("]", "");
                 String[] values = line.split(",");
-                comment tempcom = new comment(values[1], values[1], Integer.parseInt(values[2]), values[3]);
+                Comment tempcom = new Comment(values[1], values[1], Integer.parseInt(values[2]), values[3]);
                 temporaryCom.add(tempcom);
             } catch (IOException e) {
                 e.printStackTrace();

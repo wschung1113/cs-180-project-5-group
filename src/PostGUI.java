@@ -3,8 +3,10 @@ import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.*;
 import java.time.*;
+
 import static javax.swing.JOptionPane.OK_OPTION;
 import static javax.swing.JOptionPane.YES_OPTION;
+
 import java.util.ArrayList;
 
 public class PostGUI extends JComponent implements Runnable {
@@ -23,6 +25,7 @@ public class PostGUI extends JComponent implements Runnable {
     Container postContent;
     Container newsFeedHomeContent;
     Container userHomeContent;
+    int likes = 0;
 
     // Panels
     JPanel panel;
@@ -33,6 +36,17 @@ public class PostGUI extends JComponent implements Runnable {
     JPanel postPanel;
     JPanel buttonPanel;
     JPanel createPostPanel;
+    int numcom = 0;
+    ArrayList<Comment> commentsOnPostList = new ArrayList<>();
+    ArrayList<JButton> commentLikeButton = new ArrayList<>();
+    ArrayList<JButton> commentEditButton = new ArrayList<>();
+    ArrayList<JButton> commentDeleteButton = new ArrayList<>();
+
+    ArrayList<String> likeOnComments = new ArrayList<>();
+    //int i=0;
+    JButton templikeButton;
+    JButton tempeditButton;
+    JButton tempdeleteButton;
 
     // Text area & fields
     JTextArea contentTextArea;  // write post content here
@@ -76,6 +90,7 @@ public class PostGUI extends JComponent implements Runnable {
     ArrayList<String> info;
     JFrame loginFrame;
     JFrame frame1;
+    int numlikes = 0;
 
     ActionListener loginActionListener = new ActionListener() {
         @Override
@@ -179,10 +194,9 @@ public class PostGUI extends JComponent implements Runnable {
                     int j = 1;
                     for (Post post : userPosts) {
                         options[j - 1] = j + ": " + post.getPostString();
-                        System.out.println(options[j - 1]);
                         j++;
                     }
-                    String whichPost =   (String) JOptionPane.showInputDialog(null, "Which post would you like to edit?",
+                    String whichPost = (String) JOptionPane.showInputDialog(null, "Which post would you like to edit?",
                             "Edit Post", JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
 
                     String option = whichPost.substring(3, whichPost.length());
@@ -231,21 +245,21 @@ public class PostGUI extends JComponent implements Runnable {
                 }
             }
         };
-        ActionListener deleteAction = new ActionListener()
-        {
+        ActionListener deleteAction = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 yesNo = JOptionPane.showConfirmDialog(null, "Delete post?",
                         null, JOptionPane.YES_NO_OPTION);
                 if (yesNo == YES_OPTION) {
                     postPanel.removeAll();
-                    ArrayList<Post> userPosts= poster.readFromFile(user);
+                    ArrayList<Post> userPosts = poster.readFromFile(user);
+                    JButton editPostButton;
                     String[] options = new String[userPosts.size()];
                     int j = 1;
                     for (Post post : userPosts) {
                         options[j - 1] = j + ": " + post.getPostString();
                         j++;
                     }
-                    String whichPost =   (String) JOptionPane.showInputDialog(null, "Which post would you like to delete?",
+                    String whichPost = (String) JOptionPane.showInputDialog(null, "Which post would you like to delete?",
                             "Delete Post", JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
                     String option = whichPost.substring(3, whichPost.length());
                     int loc = poster.findPost(user, option);
@@ -275,26 +289,26 @@ public class PostGUI extends JComponent implements Runnable {
         editHomeButton.addActionListener(editAction);
         deleteButton.addActionListener(deleteAction);
         deleteHomeButton.addActionListener(deleteAction);
-        createPostButton.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent e)
-            {
+        createPostButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
                 frame.getContentPane().removeAll();  // or removeAll();
 
                 frame.getContentPane().add(postContent);
+
+                contentTextArea.setText("");
 
                 frame.repaint();
 
                 frame.revalidate();
             }
         });
-        createPostHomeButton.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent e)
-            {
+        createPostHomeButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
                 frame.getContentPane().removeAll();  // or removeAll();
 
                 frame.getContentPane().add(postContent);
+
+                contentTextArea.setText("");
 
                 frame.repaint();
 
@@ -330,7 +344,7 @@ public class PostGUI extends JComponent implements Runnable {
         panel = new JPanel();
         userHomeContent.add(panel, BorderLayout.CENTER);
         buttonPanel = new JPanel();
-        buttonPanel.setLayout(new GridLayout(1,2));
+        buttonPanel.setLayout(new GridLayout(1, 2));
         buttonPanel.add(editHomeButton);
         buttonPanel.add(deleteHomeButton);
         createPostPanel = new JPanel();
@@ -353,10 +367,8 @@ public class PostGUI extends JComponent implements Runnable {
         panel = new JPanel();
         homeButton = new JButton(homeIcon);
         homeButton.setPreferredSize(new Dimension(30, 30));
-        homeButton.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent e)
-            {
+        homeButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
                 // send to news feed home
                 yesNo = JOptionPane.showConfirmDialog(null, "Go to News Feed Home?",
                         null, JOptionPane.YES_NO_OPTION);
@@ -366,8 +378,6 @@ public class PostGUI extends JComponent implements Runnable {
 
                     frame.getContentPane().add(newsFeedHomeContent);
 
-                    contentTextArea.setText("");
-
                     frame.repaint();
 
                     frame.revalidate();
@@ -376,10 +386,8 @@ public class PostGUI extends JComponent implements Runnable {
         });
 
         nameButton = new JButton("username");
-        nameButton.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent e)
-            {
+        nameButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
                 // send to news feed home
                 yesNo = JOptionPane.showConfirmDialog(null, "Go to User Home?",
                         null, JOptionPane.YES_NO_OPTION);
@@ -388,8 +396,6 @@ public class PostGUI extends JComponent implements Runnable {
                     frame.getContentPane().removeAll();  // or removeAll();
 
                     frame.getContentPane().add(userHomeContent);
-
-                    contentTextArea.setText("");
 
                     frame.repaint();
 
@@ -414,10 +420,8 @@ public class PostGUI extends JComponent implements Runnable {
         // panel 3
         panel = new JPanel();
         postButton = new JButton("Post");
-        postButton.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent e)
-            {
+        postButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
                 yesNo = JOptionPane.showConfirmDialog(null, "Would you like to post?",
                         null, JOptionPane.YES_NO_OPTION);
 
@@ -436,17 +440,133 @@ public class PostGUI extends JComponent implements Runnable {
                     String minute = time1[1];
                     time = date + " " + hour + ":" + minute;
 
-                    post = poster.createPost(user, contentTextArea.getText(), time0, time, currentPosts.size());
+                    post = poster.createPost(user, contentTextArea.getText(), time, currentPosts.size());
                     newPost = new JPanel();
                     newPost.setLayout(new BorderLayout());
 
                     String title = user.getUsername() + ":" + user.getAlias() + time;
                     Border bor = BorderFactory.createTitledBorder(title);
                     JLabel label = new JLabel(post.getPostString());
+                    JTextField comfield = new JTextField();
+                    comfield.setPreferredSize(new Dimension(350, 20));
+                    JButton combutton = new JButton("Comment");
+                    int likes;
+                    combutton.setPreferredSize(new Dimension(100, 20));
                     newPost.setBorder(bor);
                     newPost.add(label);
+                    JPanel newCom = new JPanel();
+                    newCom.setLayout(new FlowLayout());
+                    newCom.add(comfield);
+                    newCom.add(combutton);
+                    JPanel panel = new JPanel(new BorderLayout());
+
 
                     postPanel.add(newPost);
+                    postPanel.add(newCom);
+                    JLabel label1 = new JLabel();
+                    JPanel temp= new JPanel();
+                    combutton.addActionListener(new ActionListener() {
+                        public void actionPerformed(ActionEvent e) {
+                            numlikes=0;
+
+                            numcom++;
+                            JPanel companel = new JPanel(new BorderLayout());
+                            String comtext = comfield.getText();
+                            comfield.setText("");
+                            templikeButton= new JButton("Likes "+numlikes);
+                            templikeButton.addActionListener(new ActionListener() {
+                                public void actionPerformed(ActionEvent e) {
+                                    //commentsOnPostList.get(numcom - 1).setLikes(commentsOnPostList.get(numcom - 1).getLikes() + 1);
+
+                                    numlikes++;
+                                    //System.out.println("printed");
+                                    templikeButton.setText("Likes "+numlikes);
+                                    commentsOnPostList.get(numcom-1).setLikes(numlikes);
+                                    frame.getContentPane().removeAll();  // or removeAll();
+                                    frame.getContentPane().add(newsFeedHomeContent);
+
+                                    frame.repaint();
+
+                                    frame.revalidate();
+                                }
+                            });
+                            tempeditButton= new JButton("Edit");
+                            tempdeleteButton = new JButton("Delete");
+                            templikeButton.setPreferredSize(new Dimension(110, 20));
+                            tempeditButton.setPreferredSize(new Dimension(60,20));
+                            tempeditButton.addActionListener(new ActionListener() {
+                                public void actionPerformed(ActionEvent e) {
+                                    String editedString = (JOptionPane.showInputDialog(null, "Enter the edited String.",
+                                            "Edit comment", JOptionPane.QUESTION_MESSAGE));
+                                    // Wonseok please add the code for editing the comment.
+                                    commentsOnPostList.get(numcom - 1).setComtext(editedString);
+                                    label1.setText(commentsOnPostList.get(numcom - 1).getCommentername() + ": " + editedString);
+                                    frame.getContentPane().removeAll();  // or removeAll();
+
+                                    frame.getContentPane().add(newsFeedHomeContent);
+
+                                    frame.repaint();
+
+                                    frame.revalidate();
+
+                                }
+                            });
+
+
+                            tempdeleteButton.setPreferredSize(new Dimension(100,20));
+                            tempdeleteButton.addActionListener(new ActionListener() {
+                                public void actionPerformed(ActionEvent e) {
+                                    //System.out.println("deleted");
+                                    // Wonseok please add the code for editing the comment.
+                                    try {
+                                        if (!user.getAlias().equals(commentsOnPostList.get(numcom - 1).getCommentername())) {
+                                            throw new CreaterNotFoundException("Privlidges to edit not found!");
+                                        }
+                                    }catch( CreaterNotFoundException ef){
+                                        JOptionPane.showMessageDialog(null, "This post is not available for editing!",
+                                                "Error", JOptionPane.ERROR_MESSAGE);
+                                    }
+                                    //commentsOnPostList.get(numcom - 1).setComtext(editedString);
+                                    temp.removeAll();
+
+                                    frame.getContentPane().removeAll();  // or removeAll();
+
+                                    frame.getContentPane().add(newsFeedHomeContent);
+
+                                    frame.repaint();
+
+                                    frame.revalidate();
+
+                                }
+                            });
+
+                            Comment comtemp = new Comment(user.getAlias(), comtext, numlikes, time, numcom,templikeButton,tempeditButton,tempdeleteButton);
+                            commentsOnPostList.add(comtemp);
+
+
+                            label1.setText(commentsOnPostList.get(numcom - 1).getCommentername() + ": " + commentsOnPostList.get(numcom - 1).getComtext());
+                            //panel.removeAll();
+
+                            //temp.removeAll();
+                            temp.add(label1);
+                            temp.add(templikeButton);
+                            temp.add(tempeditButton);
+                            temp.add(tempdeleteButton);
+                            panel.add(temp);
+                            //temp.removeAll();
+                            postPanel.add(panel);
+
+                            frame.getContentPane().removeAll();  // or removeAll();
+
+                            frame.getContentPane().add(newsFeedHomeContent);
+
+                            frame.repaint();
+
+                            frame.revalidate();
+
+                        }
+                    });
+
                     currentPosts.add(newPost);
 
                     frame.getContentPane().removeAll();  // or removeAll();
@@ -471,7 +591,7 @@ public class PostGUI extends JComponent implements Runnable {
         loginFrame.setTitle("Login page");
         loginFrame.setLocationRelativeTo(null);
         loginFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        loginFrame.setVisible(true);
+        loginFrame.setVisible(false);
         loginPage = loginFrame.getContentPane();
         loginPage.setLayout(new BorderLayout());
         loginPage.setSize(loginFrame.getSize());
@@ -517,6 +637,45 @@ public class PostGUI extends JComponent implements Runnable {
         this.alias = new JTextField(10);
         info = new ArrayList<>();
     }
+
+//    public JPanel createComment(String comtext, String Time, User user) {
+//        numcom++;
+//        comment temp = new comment(user.getAlias(), comtext, 0, Time);
+//        commentsOnPostList.add(temp);
+//        JLabel label = new JLabel(temp.toString());
+//
+//        templikeButton = new JButton("Likes " + commentsOnPostList.get(numcom - 1).getLikes());
+//        templikeButton.addActionListener(new ActionListener() {
+//            public void actionPerformed(ActionEvent e) {
+//                commentsOnPostList.get(numcom - 1).setLikes(commentsOnPostList.get(numcom - 1).getLikes() + 1);
+//
+//            }
+//        });
+//        tempdeleteButton = new JButton("Delete");
+//        tempdeleteButton.addActionListener(new ActionListener() {
+//            public void actionPerformed(ActionEvent e) {
+//
+//                commentsOnPostList.remove(numcom - 1);
+//                // Wonseok please add the code to remove/makeInvisible the Panel for the comment
+//            }
+//        });
+//        tempeditButton = new JButton("Likes " + commentsOnPostList.get(numcom - 1).getLikes());
+//        tempeditButton.addActionListener(new ActionListener() {
+//            public void actionPerformed(ActionEvent e) {
+//                String editedString = (JOptionPane.showInputDialog(null, "Enter the edited String.",
+//                        "Post maker", JOptionPane.QUESTION_MESSAGE));
+//
+//                commentsOnPostList.get(numcom - 1).setComtext(editedString);
+//
+//            }
+//        });
+//
+//        commentLikeButton.add(templikeButton);
+//        JPanel commentOnPostPanel = new JPanel();
+//        commentOnPostPanel.add(label);
+//        commentOnPostPanel.add(commentLikeButton.get(numcom - 1));
+//        return commentOnPostPanel;
+//    }
 
     public static void main(String[] args) {
         // connections
