@@ -41,9 +41,9 @@ public class Commenter {
 
     public JPanel createComment(String comtext, String Time, User user) {
         numcom++;
-        Comment temp = new Comment(user.getAlias(), comtext,0, Time );
-        commentsOnPostList.add(temp);
-        JLabel label = new JLabel(temp.toString());
+       // Comment temp = new Comment(user.getAlias(), comtext,0, Time );
+        //commentsOnPostList.add(temp);
+       // JLabel label = new JLabel(temp.toString());
 
         templikeButton = new JButton("Likes " + commentsOnPostList.get(numcom - 1).getLikes());
         templikeButton.addActionListener(new ActionListener() {
@@ -69,7 +69,7 @@ public class Commenter {
 
         commentLikeButton.add(templikeButton);
         JPanel commentOnPostPanel = new JPanel();
-        commentOnPostPanel.add(label);
+       // commentOnPostPanel.add(label);
         commentOnPostPanel.add(commentLikeButton.get(numcom - 1));
         return commentOnPostPanel;
     }
@@ -119,8 +119,8 @@ public class Commenter {
                 line = line.replace("[", "");
                 line = line.replace("]", "");
                 String[] values = line.split(",");
-                Comment tempcom = new Comment(values[1], values[1], Integer.parseInt(values[2]), values[3]);
-                temporaryCom.add(tempcom);
+               // Comment tempcom = new Comment(values[1], values[1], Integer.parseInt(values[2]), values[3]);
+                //temporaryCom.add(tempcom);
             } catch (IOException e) {
                 e.printStackTrace();
             }
