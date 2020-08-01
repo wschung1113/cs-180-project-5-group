@@ -526,7 +526,7 @@ public class PostGUI extends JComponent implements Runnable {
                                             "Edit comment", JOptionPane.QUESTION_MESSAGE));
                                     // Wonseok please add the code for editing the comment.
                                     commentsOnPostList.get(numcom - 1).setComtext(editedString);
-                                    label1.setText(commentsOnPostList.get(numcom - 1).getCommentername() + ": " + editedString);
+                                    label1.setText(commentsOnPostList.get(numcom - 1).getCommentername() + " @ "+time+": " + commentsOnPostList.get(numcom - 1).getComtext());
                                     frame.getContentPane().removeAll();  // or removeAll();
 
                                     frame.getContentPane().add(newsFeedHomeContent);
@@ -570,8 +570,8 @@ public class PostGUI extends JComponent implements Runnable {
                             commentsOnPostList.add(comtemp);
 
 
-                            label1.setText(commentsOnPostList.get(numcom - 1).getCommentername() + ": " + commentsOnPostList.get(numcom - 1).getComtext());
-                            //panel.removeAll();
+                            label1.setText(commentsOnPostList.get(numcom - 1).getCommentername() + " @ "+time+": " + commentsOnPostList.get(numcom - 1).getComtext());
+                            //panel.removeAll();hthf
 
                             //temp.removeAll();
                             temp.add(label1);
