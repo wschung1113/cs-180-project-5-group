@@ -249,10 +249,11 @@ public class PostGUI extends JComponent implements Runnable {
             public void actionPerformed(ActionEvent e) {
                 yesNo = JOptionPane.showConfirmDialog(null, "Delete post?",
                         null, JOptionPane.YES_NO_OPTION);
+                ArrayList<Post> userPosts = new ArrayList<Post>();
                 if (yesNo == YES_OPTION) {
                     postPanel.removeAll();
-                    ArrayList<Post> userPosts = poster.readFromFile(user);
-                    JButton editPostButton;
+                    userPosts = poster.readFromFile(user);
+
                     String[] options = new String[userPosts.size()];
                     int j = 1;
                     for (Post post : userPosts) {
@@ -264,10 +265,9 @@ public class PostGUI extends JComponent implements Runnable {
                     String option = whichPost.substring(3, whichPost.length());
                     int loc = poster.findPost(user, option);
                     if (loc >= userPosts.size()) {
-                        JOptionPane.showMessageDialog(null, "This post is not available for editing!",
+                        JOptionPane.showMessageDialog(null, "This post is not available for deleting!",
                                 "Error", JOptionPane.ERROR_MESSAGE);
                     } else {
-
 
                         currentPosts.remove(userPosts.get(loc).getPanelLoc());
                         userPosts.remove(loc);
@@ -319,16 +319,42 @@ public class PostGUI extends JComponent implements Runnable {
         //retrieving previous posts from file
 
         //get current users here (client)
-
         /**
-         ArrayList<Post> allPosts = new ArrayList<Post>;
+
+        ArrayList<Post> userPosts = new ArrayList<Post>();
          for (User user : users) {
-         userPosts = user.getPosts();
-         for (Post post : userPosts) {
-         allPosts.add(post);
+              userPosts = user.getPosts();
+              for (Post post : userPosts) {
+                  JPanel newPost = new JPanel();
+                  newPost.setLayout(new BorderLayout());
+
+                  String title = user.getUsername() + ":" + user.getAlias() + time;
+                  Border bor = BorderFactory.createTitledBorder(title);
+                   JLabel label = new JLabel(post.getPostString());
+                   JTextField comfield = new JTextField();
+                   comfield.setPreferredSize(new Dimension(350, 20));
+                   JButton combutton = new JButton("Comment");
+                   int likes;
+                   combutton.setPreferredSize(new Dimension(100, 20));
+                   newPost.setBorder(bor);
+                   newPost.add(label);
+                   JPanel newCom = new JPanel();
+                   newCom.setLayout(new FlowLayout());
+                   newCom.add(comfield);
+                   newCom.add(combutton);
+
+                  currentPosts.add(newPost);
+              }
          }
+         JPanel postPanel = new JPanel();
+         for (JPanel panel : currentPosts) {
+              postPanel.add(panel);
          }
+         newsFeedHomeContent.add(postPanel);
          */
+
+
+
 
         //add posts to newsfeed here
         frame.add(newsFeedHomeContent);  // first content shown after login is newsFeedHomeContent
@@ -440,7 +466,7 @@ public class PostGUI extends JComponent implements Runnable {
                     String minute = time1[1];
                     time = date + " " + hour + ":" + minute;
 
-                    post = poster.createPost(user, contentTextArea.getText(), time, currentPosts.size());
+                    post = poster.createPost(user, contentTextArea.getText(), time0, time, currentPosts.size());
                     newPost = new JPanel();
                     newPost.setLayout(new BorderLayout());
 

@@ -3,6 +3,7 @@ import java.io.*;
 import java.sql.Time;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 /**
  * The first option is to implement a social network "posting" application.
@@ -61,21 +62,47 @@ public class Poster {
     }
 
     public static void main(String[] args) {
+        //for local test cases
         ArrayList<Post> userPosts = new ArrayList<Post>();
 
-        User user = new User("username", "password", "John Doe");
-        Post post1 = new Post("use1", "pass1", LocalDateTime.now(), "16:00", 2);
-        Post post2 = new Post("use2", "pass2", LocalDateTime.now(), "15:00", 3);
-        userPosts.add(post2);
 
-        userPosts.add(post1);
-        userPosts = Post.sortPosts(userPosts);
+        User user = new User("username", "password", "John Doe");
+        Poster poster = new Poster(user);
+        Scanner scanner = new Scanner(System.in);
+        String choice = scanner.nextLine();
+        String postString = scanner.nextLine();
+        LocalDateTime time0 = LocalDateTime.now();
+        String timeString = time0.toString();
+        String[] timeArray = timeString.split("T");
+        String date = timeArray[0];
+
+        String[] time1 = timeArray[1].split(":");
+        String hour = time1[0];
+        String minute = time1[1];
+        String time = date + " " + hour + ":" + minute;
+        Post post = new Post(user.getAlias(), postString, time0, time, userPosts.size());
+        if (choice.equals("create")) {
+
+            System.out.println(post.getPostString());
+
+            Post post1 = poster.createPost(user, postString, time0, time, userPosts.size());
+            System.out.println(post1.getPostString());
+            Post post2 = userPosts.get(post1.getPanelLoc());
+            System.out.println(post2.getPostString());
+        } else if (choice.equals("edit")) {
+            poster.createPost(user, postString, time0, time, userPosts.size());
+            poster.editPost(user, post);
+            System.out.println(user.getPosts().get(post.getPanelLoc()).getPostString());
+        } else if (choice.equals("delete")) {
+            poster.deletePost(user, post.getPostString());
+            if (user.getPosts().size() == 0) {
+                System.out.println("Deleted post successfully");
+            }
+        }
 
     }
 
     public Post createPost(User user, String postString, LocalDateTime time0, String time, int panelLoc) {
-
-        //here is where I will figure out whether the user is valid
 
         String name = user.getAlias();
         Post post = new Post(name, postString, time0, time, panelLoc);
