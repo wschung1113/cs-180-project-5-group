@@ -17,14 +17,16 @@ public class Post {
     private LocalDateTime time0; //time post was made
     private String time; //String version of time post was made
     private int panelLoc;
+    private ArrayList<Comment> allcomments= new ArrayList<>();
     private static final int SIZE = 25; //limit to length of line
 
-    public Post(String name, String postString, LocalDateTime time0, String time, int panelLoc) {
+    public Post(String name, String postString, LocalDateTime time0, String time, int panelLoc, ArrayList<Comment> allcomments) {
         this.name = name; //name of user making post
         this.postString = formatPost(postString);
         this.time0 = time0;
         this.time = time;
         this.panelLoc = panelLoc;
+        this.allcomments= allcomments;
     }
 
     /**
@@ -76,6 +78,14 @@ public class Post {
         this.panelLoc = panelLoc;
     }
 
+
+    public void setAllcomments(ArrayList<Comment> allcomments) {
+        this.allcomments = allcomments;
+    }
+
+    public ArrayList<Comment> getAllcomments() {
+        return allcomments;
+    }
 
     /**
      * formats post to fit within width
