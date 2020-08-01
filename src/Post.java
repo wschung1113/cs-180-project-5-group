@@ -94,8 +94,13 @@ public class Post {
      * @return String formatted text
      */
 
-    public String formatPost(String postString) {
+    public static String formatPost(String postString) {
         String format = "";
+
+        if (postString == null) {
+            System.out.println("Error!  Cannot format a null String.");
+            return null;
+        }
 
         int length = postString.length();
         int j = 0;
@@ -124,6 +129,11 @@ public class Post {
         int length = posts.size();
         Post temp;
 
+        if (length == 0) {
+            System.out.println("Error!  Cannot sort empty list");
+            return null;
+        }
+
         for (int i = length - 1; i > 0; i--) {
             for (int j = 0; j < i; j++) {
                 if (posts.get(j).getTime0().isAfter(posts.get(j + 1).getTime0())) {
@@ -140,34 +150,47 @@ public class Post {
     public static void main(String[] args) {
         User user = new User("userName", "password", "John Doe");
         Scanner scanner = new Scanner(System.in);
+        String choice = scanner.nextLine();
         ArrayList<Post> posts = new ArrayList<Post>();
         Poster poster = new Poster(user);
-        String postS = scanner.nextLine();
-        String postS1 = scanner.nextLine();
-        LocalDateTime time0 = LocalDateTime.now();
-        String timeString = time0.toString();
-        String[] timeArray = timeString.split("T");
-        String date = timeArray[0];
 
-        String[] time1a = timeArray[1].split(":");
-        String hour = time1a[0];
-        String minute = time1a[1];
-        String time = date + " " + hour + ":" + minute;
-        Post post = poster.createPost(user, postS, time0, time, 0);
-        LocalDateTime time1 = LocalDateTime.now();
-        String timeString1 = time1.toString();
-        String[] timeArray1 = timeString.split("T");
-        String date1 = timeArray[0];
+        if (choice.equals("sort")) {
+            String postS = scanner.nextLine();
+            String postS1 = scanner.nextLine();
+            LocalDateTime time0 = LocalDateTime.now();
+            String timeString = time0.toString();
+            String[] timeArray = timeString.split("T");
+            String date = timeArray[0];
 
-        String[] time2 = timeArray[1].split(":");
-        String hour1 = time2[0];
-        String minute1 = time2[1];
-        String time3 = date1 + " " + hour1 + ":" + minute1;
-        Post post1 = poster.createPost(user, postS1, time1, time3, 1);
-        posts.add(post1);
-        posts.add(post);
-        posts = Post.sortPosts(posts);
-        System.out.println(posts.get(0).getPostString());
+            String[] time1a = timeArray[1].split(":");
+            String hour = time1a[0];
+            String minute = time1a[1];
+            String time = date + " " + hour + ":" + minute;
+            Post post = poster.createPost(user, postS, time0, time, 0);
+            LocalDateTime time1 = LocalDateTime.now();
+            String timeString1 = time1.toString();
+            String[] timeArray1 = timeString.split("T");
+            String date1 = timeArray[0];
+
+            String[] time2 = timeArray[1].split(":");
+            String hour1 = time2[0];
+            String minute1 = time2[1];
+            String time3 = date1 + " " + hour1 + ":" + minute1;
+            Post post1 = poster.createPost(user, postS1, time1, time3, 1);
+            posts.add(post1);
+            posts.add(post);
+            posts = Post.sortPosts(posts);
+            System.out.println(posts.get(0).getPostString());
+        } else if (choice.equals("sortInvalid")) {
+            ArrayList<Post> invalid = new ArrayList<>();
+            Post.sortPosts(invalid);
+        } else if (choice.equals("format")) {
+            String post1 = scanner.nextLine();
+            System.out.println(Post.formatPost(post1));
+        } else if (choice.equals("invalidFormat")) {
+            System.out.println(Post.formatPost(null));
+
+        }
 
     }
 

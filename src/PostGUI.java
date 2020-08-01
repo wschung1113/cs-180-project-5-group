@@ -454,7 +454,6 @@ public class PostGUI extends JComponent implements Runnable {
                 if (yesNo == YES_OPTION) {
                     // returns text to somewhere in contentTextArea
 
-                    //this will be commented out until we can get access to user variable
                     poster = new Poster(user);
                     LocalDateTime time0 = LocalDateTime.now();
                     String timeString = time0.toString();
@@ -488,6 +487,7 @@ public class PostGUI extends JComponent implements Runnable {
 
 
                     postPanel.add(newPost);
+                    currentPosts.add(newPost);
                     postPanel.add(newCom);
                     JLabel label1 = new JLabel();
                     JPanel temp= new JPanel();

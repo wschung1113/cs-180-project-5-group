@@ -83,7 +83,7 @@ public class Poster {
         String minute = time1[1];
         String time = date + " " + hour + ":" + minute;
         ArrayList<Comment> comments = new ArrayList<Comment>();
-        Post post = new Post(user, postString, time0, time, 0, comments);
+        Post post = new Post(user.getAlias(), postString, time0, time, 0, comments);
         if (choice.equals("create")) {
 
             System.out.println(post.getPostString());
