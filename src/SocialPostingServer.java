@@ -1,6 +1,7 @@
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 
 public class SocialPostingServer implements Runnable {
     private Socket socket;
@@ -35,26 +36,52 @@ public class SocialPostingServer implements Runnable {
     @Override
     public void run() {
         try {
-            InputStream inputStream = socket.getInputStream();
 
-            ObjectInputStream ois = new ObjectInputStream(inputStream);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            PrintWriter writer = new PrintWriter(socket.getOutputStream());
+            LoginGUI loginGUI = new LoginGUI();
 
-            OutputStream outputStream = socket.getOutputStream();
+            User user = new User("username", "password"); //
 
-            ObjectOutputStream oos = new ObjectOutputStream(outputStream);
+            PostGUI postGUI = new PostGUI();
+            String serverMessage;
 
-            //Read request from client
+            // Read message from client
+
+            try {
+                String userVerify = reader.readLine();
+                // Store username and password into an array
+                String[] userLogin = userVerify.split(",");
+                //Return response to client
+                // validate username and password (return a boolean type to decide to run the PostGUI)
+                if (userLogin[0].equals(loginGUI.storeInfo[0]) && userLogin[1].equals(loginGUI.storeInfo[1])) {
+                    serverMessage = "Correct\n";
+                } else {
+                    serverMessage = "Incorrect\n";
+                }
+
+                if (userLogin[0].equals(loginGUI.storeInfo[0]) && userLogin[1].equals(loginGUI.storeInfo[1]) && userLogin[2].equals(loginGUI.storeInfo[2])) {
+                    serverMessage = "Existed\n";
+                } else {
+                    serverMessage = "Registered\n";
+                }
+
+                // Write message to client
+                writer.write(serverMessage);
+                writer.flush();
+                
+            } catch (SocketException e) {
+                e.printStackTrace();
+            }
 
 
 
-            oos.flush();
+           //Close necessary objects
+            writer.close();
+            reader.close();
 
-            //Close necessary objects
-            ois.close();
-            oos.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 }
-
