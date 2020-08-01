@@ -18,16 +18,16 @@ public class Post {
     private LocalDateTime time0; //time post was made
     private String time; //String version of time post was made
     private int panelLoc;
-    private ArrayList<Comment> allcomments= new ArrayList<>();
+    private ArrayList<Comment> allComments;
     private static final int SIZE = 25; //limit to length of line
 
-    public Post(String name, String postString, LocalDateTime time0, String time, int panelLoc, ArrayList<Comment> allcomments) {
+    public Post(String name, String postString, LocalDateTime time0, String time, int panelLoc, ArrayList<Comment> allComments) {
         this.name = name; //name of user making post
         this.postString = formatPost(postString);
         this.time0 = time0;
         this.time = time;
         this.panelLoc = panelLoc;
-        this.allcomments= allcomments;
+        this.allComments= allComments;
     }
 
     /**
@@ -48,6 +48,7 @@ public class Post {
     public String getPostString() {
         return postString;
     }
+
 
     public LocalDateTime getTime0() {return time0;}
 
@@ -80,12 +81,12 @@ public class Post {
     }
 
 
-    public void setAllcomments(ArrayList<Comment> allcomments) {
-        this.allcomments = allcomments;
+    public void setAllComments(ArrayList<Comment> allComments) {
+        this.allComments = allComments;
     }
 
-    public ArrayList<Comment> getAllcomments() {
-        return allcomments;
+    public ArrayList<Comment> getAllComments() {
+        return allComments;
     }
 
     /**

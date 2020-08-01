@@ -82,7 +82,8 @@ public class Poster {
         String hour = time1[0];
         String minute = time1[1];
         String time = date + " " + hour + ":" + minute;
-        Post post = new Post(user.getAlias(), postString, time0, time, 0);
+        ArrayList<Comment> comments = new ArrayList<Comment>();
+        Post post = new Post(user, postString, time0, time, 0, comments);
         if (choice.equals("create")) {
 
             System.out.println(post.getPostString());
@@ -122,7 +123,8 @@ public class Poster {
     public Post createPost(User user, String postString, LocalDateTime time0, String time, int panelLoc) {
 
         String name = user.getAlias();
-        Post post = new Post(name, postString, time0, time, panelLoc);
+        ArrayList<Comment> comments = new ArrayList<Comment>();
+        Post post = new Post(name, postString, time0, time, panelLoc, comments);
         ArrayList<Post> userPosts = user.getPosts();
         userPosts.add(post);
         user.setPosts(userPosts);
@@ -173,7 +175,7 @@ public class Poster {
 
         } while (choice != JOptionPane.YES_OPTION);
 
-        Post editedPost = new Post(postEdit.getName(), replacement, postEdit.getTime0(), postEdit.getTime(), postEdit.getPanelLoc());
+        Post editedPost = new Post(postEdit.getName(), replacement, postEdit.getTime0(), postEdit.getTime(), postEdit.getPanelLoc(), postEdit.getAllComments());
         userPosts.set(loc, editedPost);
 
         //writing to GUI
@@ -273,7 +275,7 @@ public class Poster {
                     String postString = postSplit[3];
                     postString = postString.substring(0, postString.length() - 3); //splitting semicolon off of end of line
 
-                    Post post = new Post(name, postString, time0 , time, i);
+                    Post post = new Post(name, postString, time0 , time, i, );
                     userPosts.add(post);
                 }
                 i++;
