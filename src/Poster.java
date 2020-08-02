@@ -306,6 +306,9 @@ public class Poster {
             }
 
             br.close();
+            if (postStrings == null || postStrings.size() < 7) {
+                return null;
+            }
 
             int i = 0;
 
@@ -342,8 +345,7 @@ public class Poster {
                                 JButton likeButton = new JButton();
                                 JButton editButton = new JButton();
                                 JButton deleteButton = new JButton();
-                                Comment tempcomment1 = new Comment(commentername1, comstring1, likes1, Time1, commentID1,
-                                        likeButton, editButton, deleteButton);
+                                Comment tempcomment1 = new Comment(commentername1, comstring1, likes1, Time1, commentID1);
                                 comments.add(tempcomment1);
                             }
                         } catch (NullPointerException ee) {
@@ -482,8 +484,7 @@ public class Poster {
                             JButton likeButton = new JButton();
                             JButton editButton = new JButton();
                             JButton deleteButton = new JButton();
-                            Comment tempcomment1 = new Comment(commentername1, comstring1, likes1, Time1, commentID1,
-                                    likeButton, editButton, deleteButton);
+                            Comment tempcomment1 = new Comment(commentername1, comstring1, likes1, Time1, commentID1);
                             comments.add(tempcomment1);
                         }
                     } catch (NullPointerException ee) {
