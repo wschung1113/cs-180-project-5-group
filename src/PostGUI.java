@@ -139,6 +139,10 @@ public class PostGUI extends JComponent implements Runnable {
         }
     };
 
+    public PostGUI(User user) {
+        this.user = user;
+    }
+
     @Override
     public void run() {
         // main frame

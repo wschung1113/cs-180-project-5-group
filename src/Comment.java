@@ -52,6 +52,8 @@ public class Comment {
 //        this.likes= likes;
 //    }
 
+    public int getCommentID() {return commentID;}
+
 
     public void setLikebutton(JButton likebutton) {
         this.likebutton = likebutton;
@@ -138,4 +140,5 @@ public class Comment {
     }
     //return sb.toString();
 }
+
 

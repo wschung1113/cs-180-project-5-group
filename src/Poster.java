@@ -1,4 +1,4 @@
-import javax.swing.JOptionPane;
+import javax.swing.*;
 import java.io.*;
 import java.sql.Time;
 import java.time.LocalDateTime;
@@ -232,7 +232,18 @@ public class Poster {
             sb.append(post.getTime());
             sb.append(";:;");
             sb.append(post.getPostString());
-            sb.append(";;;\n");
+            sb.append(";:;\n");
+            for (Comment comment : post.getAllComments()) {
+                sb.append(comment.getComtext());
+                sb.append(",,,");
+                sb.append(comment.getLikes());
+                sb.append(",,,");
+                sb.append(comment.getTime());
+                sb.append(",,,");
+                sb.append(comment.getCommentID());
+                sb.append(":::");
+            }
+            sb.append(";;;");
 
             pw.write(sb.toString());
         }
@@ -273,9 +284,23 @@ public class Poster {
 
                 if (name.equals(user.getAlias())) {
                     String postString = postSplit[3];
-                    postString = postString.substring(0, postString.length() - 3); //splitting semicolon off of end of line
+                    String[] commentSplit = postSplit[4].split(":::");
+                    ArrayList<Comment> comments = new ArrayList<>();
+                    for (String commentString : commentSplit) {
+                        String[] comment = commentString.split(",,,");
+                        String text = comment[0];
+                        int likes = Integer.parseInt(comment[1]);
+                        String commentTime = comment[2];
+                        int ID = Integer.parseInt(comment[3]);
+                        JButton likebutton = new JButton("like");
+                        JButton editbutton = new JButton("edit");
+                        JButton deletebutton = new JButton("delete");
+                        Comment comment1 = new Comment(name, text, likes, commentTime, ID, likebutton,
+                        editbutton, deletebutton);
+                        comments.add(comment1);
+                    }
 
-                    Post post = new Post(name, postString, time0 , time, i, );
+                    Post post = new Post(name, postString, time0 , time, i, comments);
                     userPosts.add(post);
                 }
                 i++;
