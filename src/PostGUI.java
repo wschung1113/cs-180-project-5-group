@@ -184,102 +184,114 @@ public class PostGUI extends JComponent implements Runnable {
                 yesNo = JOptionPane.showConfirmDialog(null, "Edit post?",
                         null, JOptionPane.YES_NO_OPTION);
                 if (yesNo == JOptionPane.YES_OPTION) {
-
-                    postPanel.removeAll();
-                    repaint();
-                    frame.getContentPane().revalidate();
-
                     ArrayList<Post> userPosts = poster.readFromFile(user);
-                    String[] options = new String[userPosts.size()];
-                    int j = 1;
-                    for (Post post : userPosts) {
-                        options[j - 1] = j + ": " + post.getPostString();
-                        j++;
-                    }
-                    String whichPost = (String) JOptionPane.showInputDialog(null, "Which post would you like to edit?",
-                            "Edit Post", JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
 
-                    String option = whichPost.substring(3, whichPost.length());
-                    int loc = poster.findPost(user, option);
-                    if (loc >= userPosts.size()) {
-                        JOptionPane.showMessageDialog(null, "This post is not available for editing!",
-                                "Error", JOptionPane.ERROR_MESSAGE);
-                        post = null;
+                    if (userPosts.size() == 0) {
+                        JOptionPane.showMessageDialog(null, "Error! No posts available for editing",
+                                null, JOptionPane.ERROR_MESSAGE);
                     } else {
-                        post = poster.editPost(user, userPosts.get(loc));
-                    }
-                    if (post != null) {
-
-
-                        editedPost = new JPanel();
-                        editedPost.setLayout(new BorderLayout());
-
-                        LocalDateTime time0 = LocalDateTime.now();
-                        String timeString = time0.toString();
-                        String[] timeArray = timeString.split("T");
-                        String date = timeArray[0];
-
-                        String[] time1 = timeArray[1].split(":");
-                        String hour = time1[0];
-                        String minute = time1[1];
-                        time = date + " " + hour + ":" + minute;
-
-                        String title = user.getUsername() + ":" + user.getAlias() + ":" + time;
-                        Border bor = BorderFactory.createTitledBorder(title);
-                        JLabel label = new JLabel(post.getPostString());
-
-                        editedPost.setBorder(bor);
-                        editedPost.add(label);
-
-                        currentPosts.set(post.getPanelLoc(), editedPost);
-                        JPanel currentPanel = new JPanel();
-                        currentPanel.setLayout(new GridLayout(0, 1));
-                        for (JPanel panel : currentPosts) {
-                            currentPanel.add(panel);
-                        }
-                        postPanel.add(currentPanel);
-                        frame.getContentPane().revalidate();
+                        postPanel.removeAll();
                         repaint();
-                    }
+                        frame.getContentPane().revalidate();
 
+
+                        String[] options = new String[userPosts.size()];
+                        int j = 1;
+                        for (Post post : userPosts) {
+                            options[j - 1] = j + ": " + post.getPostString();
+                            j++;
+                        }
+                        String whichPost = (String) JOptionPane.showInputDialog(null, "Which post would you like to edit?",
+                                "Edit Post", JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+
+                        String option = whichPost.substring(3, whichPost.length());
+                        int loc = poster.findPost(user, option);
+                        if (loc >= userPosts.size()) {
+                            JOptionPane.showMessageDialog(null, "This post is not available for editing!",
+                                    "Error", JOptionPane.ERROR_MESSAGE);
+                            post = null;
+                        } else {
+                            post = poster.editPost(user, userPosts.get(loc));
+                        }
+                        if (post != null) {
+
+
+                            editedPost = new JPanel();
+                            editedPost.setLayout(new BorderLayout());
+
+                            LocalDateTime time0 = LocalDateTime.now();
+                            String timeString = time0.toString();
+                            String[] timeArray = timeString.split("T");
+                            String date = timeArray[0];
+
+                            String[] time1 = timeArray[1].split(":");
+                            String hour = time1[0];
+                            String minute = time1[1];
+                            time = date + " " + hour + ":" + minute;
+
+                            String title = user.getUsername() + ":" + user.getAlias() + ":" + time;
+                            Border bor = BorderFactory.createTitledBorder(title);
+                            JLabel label = new JLabel(post.getPostString());
+
+                            editedPost.setBorder(bor);
+                            editedPost.add(label);
+
+                            currentPosts.set(post.getPanelLoc(), editedPost);
+                            JPanel currentPanel = new JPanel();
+                            currentPanel.setLayout(new GridLayout(0, 1));
+                            for (JPanel panel : currentPosts) {
+                                currentPanel.add(panel);
+                            }
+                            postPanel.add(currentPanel);
+                            frame.getContentPane().revalidate();
+                            repaint();
+                        }
+
+                    }
                 }
             }
         };
         ActionListener deleteAction = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+
                 yesNo = JOptionPane.showConfirmDialog(null, "Delete post?",
                         null, JOptionPane.YES_NO_OPTION);
                 ArrayList<Post> userPosts = new ArrayList<Post>();
                 if (yesNo == YES_OPTION) {
-                    postPanel.removeAll();
+
                     userPosts = poster.readFromFile(user);
 
-                    String[] options = new String[userPosts.size()];
-                    int j = 1;
-                    for (Post post : userPosts) {
-                        options[j - 1] = j + ": " + post.getPostString();
-                        j++;
-                    }
-                    String whichPost = (String) JOptionPane.showInputDialog(null, "Which post would you like to delete?",
-                            "Delete Post", JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
-                    String option = whichPost.substring(3, whichPost.length());
-                    int loc = poster.findPost(user, option);
-                    if (loc >= userPosts.size()) {
-                        JOptionPane.showMessageDialog(null, "This post is not available for deleting!",
-                                "Error", JOptionPane.ERROR_MESSAGE);
+                    if (userPosts.size() == 0) {
+                        JOptionPane.showMessageDialog(null, "Error! No posts available for deleting",
+                                null, JOptionPane.ERROR_MESSAGE);
                     } else {
-
-                        currentPosts.remove(userPosts.get(loc).getPanelLoc());
-                        userPosts.remove(loc);
-                        JPanel currentPanel = new JPanel();
-                        currentPanel.setLayout(new GridLayout(0, 1));
-                        for (JPanel panel : currentPosts) {
-                            currentPanel.add(panel);
+                        postPanel.removeAll();
+                        String[] options = new String[userPosts.size()];
+                        int j = 1;
+                        for (Post post : userPosts) {
+                            options[j - 1] = j + ": " + post.getPostString();
+                            j++;
                         }
-                        poster.writeToFile(userPosts);
-                        postPanel.add(currentPanel);
-                        frame.getContentPane().revalidate();
-                        repaint();
+                        String whichPost = (String) JOptionPane.showInputDialog(null, "Which post would you like to delete?",
+                            "Delete Post", JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+                        String option = whichPost.substring(3, whichPost.length());
+                        int loc = poster.findPost(user, option);
+                        if (loc >= userPosts.size()) {
+                            JOptionPane.showMessageDialog(null, "This post is not available for deleting!",
+                                "Error", JOptionPane.ERROR_MESSAGE);
+                        } else {
+                            currentPosts.remove(userPosts.get(loc).getPanelLoc());
+                            userPosts.remove(loc);
+                            JPanel currentPanel = new JPanel();
+                            currentPanel.setLayout(new GridLayout(0, 1));
+                            for (JPanel panel : currentPosts) {
+                                currentPanel.add(panel);
+                            }
+                            poster.writeToFile(userPosts);
+                            postPanel.add(currentPanel);
+                            frame.getContentPane().revalidate();
+                            repaint();
+                        }
                     }
 
                 }
