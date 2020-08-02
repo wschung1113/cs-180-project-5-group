@@ -116,8 +116,7 @@ public class PostGUI extends JComponent implements Runnable {
 
     //for posts
 
-    //User user = new User("default", "default", "default"); //default
-    User user;
+    User user = new User("default", "default", "default"); //default
     Post post; //post being written
     Poster poster; //for creating, editing, and deleting posts
 
@@ -492,7 +491,7 @@ public class PostGUI extends JComponent implements Runnable {
             }
         });
 
-        nameButton = new JButton("username");
+        nameButton = new JButton(user.getUsername());
         nameButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 // send to news feed home
