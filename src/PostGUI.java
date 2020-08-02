@@ -80,6 +80,9 @@ public class PostGUI extends JComponent implements Runnable {
     JPanel postPanel;
     JPanel buttonPanel;
     JPanel createPostPanel;
+    JPanel buttonHomePanel;
+    JPanel createPostHomePanel;
+
     int numcom = 0;
     ArrayList<Comment> commentsOnPostList = new ArrayList<>();
     ArrayList<JButton> commentLikeButton = new ArrayList<>();
@@ -444,20 +447,19 @@ public class PostGUI extends JComponent implements Runnable {
         userHomeContent.add(new PostGUI(), BorderLayout.CENTER);
 
         // panel 1
-        panel = new JPanel();
-        userHomeContent.add(panel, BorderLayout.CENTER);
-        buttonPanel = new JPanel();
-        buttonPanel.setLayout(new GridLayout(1, 2));
-        buttonPanel.add(editHomeButton);
-        buttonPanel.add(deleteHomeButton);
-        createPostPanel = new JPanel();
-        createPostPanel.setLayout(new GridLayout(1, 8));
+        buttonHomePanel = new JPanel();
+        buttonHomePanel.setLayout(new GridLayout(1, 2));
+        buttonHomePanel.add(editHomeButton);
+        buttonHomePanel.add(deleteHomeButton);
+        userHomeContent.add(buttonHomePanel, BorderLayout.SOUTH);
+
+        JPanel createPostHomePanel = new JPanel();
+        createPostHomePanel.setLayout(new GridLayout(1, 8));
         for (int i = 0; i < 8; i++) {  // add empty labels to display createPostButton on the top-right corner
-            createPostPanel.add(new JLabel());
+            createPostHomePanel.add(new JLabel());
         }
-        createPostPanel.add(createPostHomeButton);
-        userHomeContent.add(createPostPanel, BorderLayout.NORTH);
-        userHomeContent.add(buttonPanel, BorderLayout.SOUTH);
+        createPostHomePanel.add(createPostHomeButton);
+        userHomeContent.add(createPostHomePanel, BorderLayout.NORTH);
 
 
         // postContent
@@ -496,10 +498,16 @@ public class PostGUI extends JComponent implements Runnable {
                         null, JOptionPane.YES_NO_OPTION);
 
                 if (yesNo == YES_OPTION) {
+                    JPanel postGridLayoutPanel = new JPanel();
+                    postGridLayoutPanel.setLayout(new GridLayout(0, 1));
+
                     frame.getContentPane().removeAll();  // or removeAll();
+
                     userPosts = poster.readFromFile(user);
-                    JPanel panel = new JPanel();
-                    userHomeContent.setLayout(new GridLayout(0, 1));
+
+                    panel = new JPanel();
+//                    userHomeContent.setLayout(new GridLayout(0, 1));
+
                     if (userPosts != null) {
                         for (Post post : userPosts) {
                             JPanel newPost = new JPanel();
@@ -521,7 +529,12 @@ public class PostGUI extends JComponent implements Runnable {
                             panel.add(newPost);
                         }
                     }
-                    userHomeContent.add(panel);
+
+//                    userHomeContent.add(panel);
+
+                    postGridLayoutPanel.add(panel);
+
+                    userHomeContent.add(postGridLayoutPanel);
 
                     frame.getContentPane().add(userHomeContent);
 
@@ -615,6 +628,7 @@ public class PostGUI extends JComponent implements Runnable {
                                     templikeButton.setText("Likes "+numlikes);
                                     commentsOnPostList.get(numcom-1).setLikes(numlikes);
                                     frame.getContentPane().removeAll();  // or removeAll();
+
                                     frame.getContentPane().add(newsFeedHomeContent);
 
                                     frame.repaint();
@@ -715,31 +729,6 @@ public class PostGUI extends JComponent implements Runnable {
 
         panel.add(postButton);
         postContent.add(panel, BorderLayout.SOUTH);
-
-
-        // loginFrame
-        loginFrame = new JFrame();
-        loginFrame.setSize(450, 100);
-        loginFrame.setTitle("Login page");
-        loginFrame.setLocationRelativeTo(null);
-        loginFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        loginFrame.setVisible(false);
-        loginPage = loginFrame.getContentPane();
-        loginPage.setLayout(new BorderLayout());
-        loginPage.setSize(loginFrame.getSize());
-        panel = new JPanel();
-        panel.add(usernameLabel);
-        panel.add(username);
-        panel.add(passwordLabel);
-        panel.add(password);
-        panel1 = new JPanel();
-        login.addActionListener(loginActionListener);
-        register.addActionListener(loginActionListener);
-        enter.addActionListener(loginActionListener);
-        panel1.add(login);
-        panel1.add(register);
-        loginPage.add(panel, BorderLayout.NORTH);
-        loginPage.add(panel1, BorderLayout.CENTER);
 
 
         // final step
