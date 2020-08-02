@@ -344,34 +344,38 @@ public class PostGUI extends JComponent implements Runnable {
 
         allPosts = poster.readAll();
 
-        for (Post post : allPosts) {
-            JPanel panel = new JPanel();
-            LocalDateTime time0 = post.getTime0();
-            String timeString = post.getTime();
-            newPost = new JPanel();
-            newPost.setLayout(new BorderLayout());
-            User user1 = post.getUser();
+        if (allPosts != null) {
 
-            String title = user1.getUsername() + ":" + user1.getAlias() + timeString;
-            Border bor = BorderFactory.createTitledBorder(title);
-            JLabel label = new JLabel(post.getPostString());
-            JTextField comfield = new JTextField();
-            comfield.setPreferredSize(new Dimension(350, 20));
-            JButton combutton = new JButton("Comment");
-            int likes;
-            combutton.setPreferredSize(new Dimension(100, 20));
-            newPost.setBorder(bor);
-            newPost.add(label);
-            JPanel newCom = new JPanel();
-            newCom.setLayout(new FlowLayout());
-            newCom.add(comfield);
-            newCom.add(combutton);
-            postPanel.add(newPost);
-            currentPosts.add(newPost);
-            postPanel.add(newCom);
-            //add existing comments here instead
+            for (Post post : allPosts) {
+                JPanel panel = new JPanel();
+                LocalDateTime time0 = post.getTime0();
+                String timeString = post.getTime();
+                newPost = new JPanel();
+                newPost.setLayout(new BorderLayout());
+                User user1 = post.getUser();
+
+                String title = user1.getUsername() + ":" + user1.getAlias() + timeString;
+                Border bor = BorderFactory.createTitledBorder(title);
+                JLabel label = new JLabel(post.getPostString());
+                JTextField comfield = new JTextField();
+                comfield.setPreferredSize(new Dimension(350, 20));
+                JButton combutton = new JButton("Comment");
+                int likes;
+                combutton.setPreferredSize(new Dimension(100, 20));
+                newPost.setBorder(bor);
+                newPost.add(label);
+                JPanel newCom = new JPanel();
+                newCom.setLayout(new FlowLayout());
+                newCom.add(comfield);
+                newCom.add(combutton);
+                postPanel.add(newPost);
+                currentPosts.add(newPost);
+                postPanel.add(newCom);
+                //add existing comments here instead
+            }
+
+            newsFeedHomeContent.add(postPanel);
         }
-        newsFeedHomeContent.add(postPanel);
         frame.add(newsFeedHomeContent);  // first content shown after login is newsFeedHomeContent
 
 
@@ -504,7 +508,9 @@ public class PostGUI extends JComponent implements Runnable {
                     postPanel.add(newPost);
                     currentPosts.add(newPost);
 
+
                     allPosts.add(post);
+
 
                     poster.writeAll(allPosts);
                     postPanel.add(newCom);

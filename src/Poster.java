@@ -359,41 +359,44 @@ public class Poster {
             FileOutputStream fos = new FileOutputStream(f);
             PrintWriter pw = new PrintWriter(fos);
 
-            for (Post post : allPosts) {
+            if (allPosts != null) {
 
-                User user = post.getUser();
+                for (Post post : allPosts) {
 
-                StringBuilder sb = new StringBuilder();
-                sb.append(user.getUsername());
-                sb.append(";:;");
-                sb.append(user.getPassword());
-                sb.append(";:;");
-                sb.append(post.getName());
-                sb.append(";:;");
-                sb.append(post.getTime0());
-                sb.append(";:;");
-                sb.append(post.getTime());
-                sb.append(";:;");
-                sb.append(post.getPostString());
-                sb.append(";:;\n");
-                sb.append(";:;");
-                sb.append(post.getPanelLoc());
-                for (int i = 0; i < post.getAllComments().size() ; i++) {
-                    Comment temp= new Comment();
-                    temp= post.getAllComments().get(i);
-                    sb.append("["+temp.getCommentername()+","+temp.getComtext()+","+temp.getLikes()+","+temp.getTime()+","+temp.getCommentID()+"]");
-                    sb.append("::");
+                    User user = post.getUser();
+
+                    StringBuilder sb = new StringBuilder();
+                    sb.append(user.getUsername());
+                    sb.append(";:;");
+                    sb.append(user.getPassword());
+                    sb.append(";:;");
+                    sb.append(post.getName());
+                    sb.append(";:;");
+                    sb.append(post.getTime0());
+                    sb.append(";:;");
+                    sb.append(post.getTime());
+                    sb.append(";:;");
+                    sb.append(post.getPostString());
+                    sb.append(";:;\n");
+                    sb.append(";:;");
+                    sb.append(post.getPanelLoc());
+                    for (int i = 0; i < post.getAllComments().size(); i++) {
+                        Comment temp = new Comment();
+                        temp = post.getAllComments().get(i);
+                        sb.append("[" + temp.getCommentername() + "," + temp.getComtext() + "," + temp.getLikes() + "," + temp.getTime() + "," + temp.getCommentID() + "]");
+                        sb.append("::");
+                    }
+                    sb.append("\n");
+                    sb.append(";;;");
+
+                    pw.write(sb.toString());
                 }
-                sb.append("\n");
-                sb.append(";;;");
-
-                pw.write(sb.toString());
             }
 
-            pw.close();
-        } catch (IOException e) {
-            System.out.println("Error writing to file. That file does not exist.");
-        }
+                pw.close();
+            } catch(IOException e){
+                System.out.println("Error writing to file. That file does not exist.");
+            }
     }
 
 
@@ -452,7 +455,9 @@ public class Poster {
                 allPosts.add(post);
                 i++;
             }
-            allPosts = Post.sortPosts(allPosts);
+            if (allPosts.size() != 0) {
+                allPosts = Post.sortPosts(allPosts);
+            }
 
 
         } catch (IOException e) {
