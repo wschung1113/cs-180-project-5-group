@@ -20,8 +20,10 @@ public class Post {
     private int panelLoc;
     private ArrayList<Comment> allComments;
     private static final int SIZE = 25; //limit to length of line
+    private User user;
 
-    public Post(String name, String postString, LocalDateTime time0, String time, int panelLoc, ArrayList<Comment> allComments) {
+    public Post(User user, String name, String postString, LocalDateTime time0, String time, int panelLoc, ArrayList<Comment> allComments) {
+        this.user = user;
         this.name = name; //name of user making post
         this.postString = formatPost(postString);
         this.time0 = time0;
@@ -39,6 +41,8 @@ public class Post {
     public String getName() {
         return name;
     }
+
+    public User getUser() {return user; }
 
     /**
      * returns text in post

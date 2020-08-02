@@ -51,7 +51,7 @@ public class LoginGUI extends JComponent implements Runnable {
                 try {
                     if (client.connect()) { //Client connects to server, check whether user is registered
                         JOptionPane.showMessageDialog(null, "You are logged in!");
-                        postGUI.postGUICaller(postGUI);
+                        postGUI.run();
                     } else {
                         JOptionPane.showMessageDialog(null, "Incorrect username or password");
                     }

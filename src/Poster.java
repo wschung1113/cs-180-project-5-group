@@ -83,7 +83,7 @@ public class Poster {
         String minute = time1[1];
         String time = date + " " + hour + ":" + minute;
         ArrayList<Comment> comments = new ArrayList<Comment>();
-        Post post = new Post(user.getAlias(), postString, time0, time, 0, comments);
+        Post post = new Post(user, user.getAlias(), postString, time0, time, 0, comments);
         if (choice.equals("create")) {
 
             System.out.println(post.getPostString());
@@ -111,10 +111,10 @@ public class Poster {
             posts.add(post);
             poster.writeToFile(posts);
         } else if (choice.equals("findPost")) {
-            int loc = poster.findPost(user, "this is a test");
+            int loc = poster.findPost(user, "this is a test", 0);
             System.out.println(loc);
         } else if (choice.equals("invalidPost")) {
-            int loc = poster.findPost(user, "invalid");
+            int loc = poster.findPost(user, "invalid", 0);
             System.out.println(loc);
         }
 
@@ -124,7 +124,7 @@ public class Poster {
 
         String name = user.getAlias();
         ArrayList<Comment> comments = new ArrayList<Comment>();
-        Post post = new Post(name, postString, time0, time, panelLoc, comments);
+        Post post = new Post(user, name, postString, time0, time, panelLoc, comments);
         ArrayList<Post> userPosts = user.getPosts();
         userPosts.add(post);
         user.setPosts(userPosts);
@@ -175,7 +175,7 @@ public class Poster {
 
         } while (choice != JOptionPane.YES_OPTION);
 
-        Post editedPost = new Post(postEdit.getName(), replacement, postEdit.getTime0(), postEdit.getTime(), postEdit.getPanelLoc(), postEdit.getAllComments());
+        Post editedPost = new Post(postEdit.getUser(), postEdit.getName(), replacement, postEdit.getTime0(), postEdit.getTime(), postEdit.getPanelLoc(), postEdit.getAllComments());
         userPosts.set(loc, editedPost);
 
         //writing to GUI
@@ -224,7 +224,13 @@ public class Poster {
 
             for (Post post : userPosts) {
 
+                User user = post.getUser();
+
                 StringBuilder sb = new StringBuilder();
+                sb.append(user.getUsername());
+                sb.append(";:;");
+                sb.append(user.getPassword());
+                sb.append(";:;");
             sb.append(post.getName());
             sb.append(";:;");
             sb.append(post.getTime0());
@@ -233,16 +239,15 @@ public class Poster {
             sb.append(";:;");
             sb.append(post.getPostString());
             sb.append(";:;\n");
-            for (Comment comment : post.getAllComments()) {
-                sb.append(comment.getComtext());
-                sb.append(",,,");
-                sb.append(comment.getLikes());
-                sb.append(",,,");
-                sb.append(comment.getTime());
-                sb.append(",,,");
-                sb.append(comment.getCommentID());
-                sb.append(":::");
-            }
+                sb.append(";:;");
+                sb.append(post.getPanelLoc());
+                for (int i = 0; i < post.getAllComments().size() ; i++) {
+                    Comment temp= new Comment();
+                    temp= post.getAllComments().get(i);
+                    sb.append("["+temp.getCommentername()+","+temp.getComtext()+","+temp.getLikes()+","+temp.getTime()+","+temp.getCommentID()+"]");
+                    sb.append("::");
+                }
+                sb.append("\n");
             sb.append(";;;");
 
             pw.write(sb.toString());
@@ -278,29 +283,41 @@ public class Poster {
 
                 String[] postSplit = s.split(";:;"); //info before colon is name, after is postString
 
-                String name = postSplit[0];
-                LocalDateTime time0 = LocalDateTime.parse(postSplit[1]);
-                String time = postSplit[2];
+                String username = postSplit[0];
+                String password = postSplit[1];
+
+
+                String name = postSplit[2];
+                User user1 = new User(username, password, name);
+                LocalDateTime time0 = LocalDateTime.parse(postSplit[3]);
+                String time = postSplit[4];
 
                 if (name.equals(user.getAlias())) {
-                    String postString = postSplit[3];
-                    String[] commentSplit = postSplit[4].split(":::");
+                    String postString = postSplit[5];
+                    String[] commentSplit = postSplit[6].split(":::");
                     ArrayList<Comment> comments = new ArrayList<>();
-                    for (String commentString : commentSplit) {
-                        String[] comment = commentString.split(",,,");
-                        String text = comment[0];
-                        int likes = Integer.parseInt(comment[1]);
-                        String commentTime = comment[2];
-                        int ID = Integer.parseInt(comment[3]);
-                        JButton likebutton = new JButton("like");
-                        JButton editbutton = new JButton("edit");
-                        JButton deletebutton = new JButton("delete");
-                        Comment comment1 = new Comment(name, text, likes, commentTime, ID, likebutton,
-                        editbutton, deletebutton);
-                        comments.add(comment1);
+                    try {
+                        String[] allcoms = postSplit[4].split("::");
+                        for (int j = 0; j < allcoms.length; j++) {
+                            allcoms[i] = allcoms[i].replace("[", "");
+                            allcoms[i] = allcoms[i].replace("]", "");
+                            String[] comvalues = allcoms[i].split(",");
+                            String commentername1 = comvalues[0];
+                            String comstring1 = comvalues[1];
+                            int likes1 = Integer.parseInt(comvalues[2]);
+                            String Time1 = comvalues[3];
+                            int commentID1 = Integer.parseInt(comvalues[4]);
+                            JButton likeButton = new JButton();
+                            JButton editButton = new JButton();
+                            JButton deleteButton = new JButton();
+                            Comment tempcomment1 = new Comment(commentername1, comstring1, likes1, Time1, commentID1,
+                                    likeButton, editButton, deleteButton);
+                            comments.add(tempcomment1);
+                        }
+                    }catch (NullPointerException ee){
+                        ee.printStackTrace();
                     }
-
-                    Post post = new Post(name, postString, time0 , time, i, comments);
+                    Post post = new Post(user, name, postString, time0 , time, i, comments);
                     userPosts.add(post);
                 }
                 i++;
@@ -314,16 +331,136 @@ public class Poster {
         return null;
     }
 
-    public int findPost(User user, String s) {
-
-        ArrayList<Post> userPosts= readFromFile(user);
+    public int findPost(User user, String s, int option) {
         int loc = 0;
-        for (Post post : userPosts) {
+        ArrayList<Post> posts = new ArrayList<>();
+        if (option == 0) {//find post in user posts
+
+            posts = readFromFile(user);
+
+        } else if (option == 1) { //find post in all posts
+            posts = readAll();
+        }
+        for (Post post : posts) {
             if (post.getPostString().equals(s)) {
                 return loc;
             }
             loc++;
         }
+
         return loc;
+
     }
+
+    public void writeAll(ArrayList<Post> allPosts) {
+
+        try {
+            File f = new File("allPosts.txt");
+            FileOutputStream fos = new FileOutputStream(f);
+            PrintWriter pw = new PrintWriter(fos);
+
+            for (Post post : allPosts) {
+
+                User user = post.getUser();
+
+                StringBuilder sb = new StringBuilder();
+                sb.append(user.getUsername());
+                sb.append(";:;");
+                sb.append(user.getPassword());
+                sb.append(";:;");
+                sb.append(post.getName());
+                sb.append(";:;");
+                sb.append(post.getTime0());
+                sb.append(";:;");
+                sb.append(post.getTime());
+                sb.append(";:;");
+                sb.append(post.getPostString());
+                sb.append(";:;\n");
+                sb.append(";:;");
+                sb.append(post.getPanelLoc());
+                for (int i = 0; i < post.getAllComments().size() ; i++) {
+                    Comment temp= new Comment();
+                    temp= post.getAllComments().get(i);
+                    sb.append("["+temp.getCommentername()+","+temp.getComtext()+","+temp.getLikes()+","+temp.getTime()+","+temp.getCommentID()+"]");
+                    sb.append("::");
+                }
+                sb.append("\n");
+                sb.append(";;;");
+
+                pw.write(sb.toString());
+            }
+
+            pw.close();
+        } catch (IOException e) {
+            System.out.println("Error writing to file. That file does not exist.");
+        }
+    }
+
+
+    public ArrayList<Post> readAll() {
+        ArrayList<String> postStrings = new ArrayList<>();
+        String line;
+        ArrayList<Post> allPosts = new ArrayList<>();
+        try {
+            File f = new File("allPosts.txt");
+            FileReader fr = new FileReader(f);
+            BufferedReader br = new BufferedReader(fr);
+
+            while ((line = br.readLine()) != null) {
+                postStrings.add(line);
+            }
+
+            br.close();
+
+            int i = 0;
+
+            for (String s : postStrings) {
+
+                String[] postSplit = s.split(";:;"); //info before colon is name, after is postString
+                String username = postSplit[0];
+                String password = postSplit[1];
+                String name = postSplit[2];
+                User user1 = new User(username, password, name);
+                LocalDateTime time0 = LocalDateTime.parse(postSplit[3]);
+                String time = postSplit[4];
+                String postString = postSplit[5];
+                String[] commentSplit = postSplit[6].split(":::");
+                ArrayList<Comment> comments = new ArrayList<>();
+                try {
+                    String[] allcoms = postSplit[4].split("::");
+                    for (int j = 0; j < allcoms.length; j++) {
+                        allcoms[i] = allcoms[i].replace("[", "");
+                        allcoms[i] = allcoms[i].replace("]", "");
+                        String[] comvalues = allcoms[i].split(",");
+                        String commentername1 = comvalues[0];
+                        String comstring1 = comvalues[1];
+                        int likes1 = Integer.parseInt(comvalues[2]);
+                        String Time1 = comvalues[3];
+                        int commentID1 = Integer.parseInt(comvalues[4]);
+                        JButton likeButton = new JButton();
+                        JButton editButton = new JButton();
+                        JButton deleteButton = new JButton();
+                        Comment tempcomment1 = new Comment(commentername1, comstring1, likes1, Time1, commentID1,
+                        likeButton, editButton, deleteButton);
+                        comments.add(tempcomment1);
+                    }
+                }catch (NullPointerException ee){
+                    ee.printStackTrace();
+                }
+
+                Post post = new Post(user1, name, postString, time0 , time, i, comments);
+                allPosts.add(post);
+                i++;
+            }
+            allPosts = Post.sortPosts(allPosts);
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Error reading from file. That file does not exist.");
+        }
+
+        return allPosts;
+    }
+
 }
