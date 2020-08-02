@@ -509,7 +509,7 @@ public class PostGUI extends JComponent implements Runnable {
 
                     userPosts = poster.readFromFile(user);
 
-                    panel = new JPanel();
+
 //                    userHomeContent.setLayout(new GridLayout(0, 1));
 
 
@@ -531,13 +531,12 @@ public class PostGUI extends JComponent implements Runnable {
                             newCom.setLayout(new FlowLayout());
                             newCom.add(comfield);
                             newCom.add(combutton);
-                            panel.add(newPost);
+                            postGridLayoutPanel.add(newPost);
                         }
                     }
 
 //                    userHomeContent.add(panel);
 
-                    postGridLayoutPanel.add(panel);
 
                     userHomeContent.add(postGridLayoutPanel);
 
