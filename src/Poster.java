@@ -481,9 +481,6 @@ public class Poster {
                             int likes1 = Integer.parseInt(comvalues[2]);
                             String Time1 = comvalues[3];
                             int commentID1 = Integer.parseInt(comvalues[4]);
-                            JButton likeButton = new JButton();
-                            JButton editButton = new JButton();
-                            JButton deleteButton = new JButton();
                             Comment tempcomment1 = new Comment(commentername1, comstring1, likes1, Time1, commentID1);
                             comments.add(tempcomment1);
                         }

@@ -83,6 +83,7 @@ public class PostGUI extends JComponent implements Runnable {
     JPanel createPostPanel;
     JPanel buttonHomePanel;
     JPanel createPostHomePanel;
+    JLabel label1;
 
     int numcom = 0;
     ArrayList<Comment> commentsOnPostList = new ArrayList<>();
@@ -96,6 +97,7 @@ public class PostGUI extends JComponent implements Runnable {
     JButton templikeButton;
     JButton tempeditButton;
     JButton tempdeleteButton;
+    JButton combutton;
 
     // Text area & fields
     JTextArea contentTextArea;  // write post content here
@@ -117,6 +119,7 @@ public class PostGUI extends JComponent implements Runnable {
     //for posts
 
     User user = new User("default", "default", "default"); //default
+    //User user;
     Post post; //post being written
     Poster poster; //for creating, editing, and deleting posts
 
@@ -135,11 +138,13 @@ public class PostGUI extends JComponent implements Runnable {
     JTextField username;
     JTextField password;
     JTextField alias;
+    JTextField comfield;
     Container registerPage;
     Container loginPage;
     ArrayList<String> info;
     JFrame loginFrame;
     JFrame frame1;
+    JFrame frame;
     int numlikes = 0;
     ArrayList<Post> allPosts = new ArrayList<>();
     ArrayList<Post> userPosts = new ArrayList<>();
@@ -191,10 +196,77 @@ public class PostGUI extends JComponent implements Runnable {
         }
     };
 
+    ActionListener combuttonActionListener= new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if(e.getSource()== templikeButton){
+                int templike=commentsOnPostList.get(numcom-1).getLikes();
+
+                templikeButton.setText("Likes "+templike++);
+                commentsOnPostList.get(numcom-1).setLikes(templike++);
+                post.setAllComments(commentsOnPostList);
+                frame.getContentPane().removeAll();  // or removeAll();
+
+                frame.getContentPane().add(newsFeedHomeContent);
+
+                frame.repaint();
+
+                frame.revalidate();
+
+            }
+            if(e.getSource()== tempeditButton){
+                String editedString = (JOptionPane.showInputDialog(null, "Enter the edited String.",
+                        "Edit comment", JOptionPane.QUESTION_MESSAGE));
+
+                commentsOnPostList.get(numcom - 1).setComtext(editedString);
+                post.setAllComments(commentsOnPostList);
+                label1.setText(commentsOnPostList.get(numcom - 1).getCommentername() + " @ "+time+": " + commentsOnPostList.get(numcom - 1).getComtext());
+                frame.getContentPane().removeAll();  // or removeAll();
+
+                frame.getContentPane().add(newsFeedHomeContent);
+
+                frame.repaint();
+
+                frame.revalidate();
+
+            } else if(e.getSource()== tempdeleteButton){
+                try {
+                    if (!user.getAlias().equals(commentsOnPostList.get(numcom - 1).getCommentername())) {
+                        throw new CreaterNotFoundException("Privlidges to edit not found!");
+                    }
+                }catch( CreaterNotFoundException ef){
+                    JOptionPane.showMessageDialog(null, "This post is not available for editing!",
+                            "Error", JOptionPane.ERROR_MESSAGE);
+                }
+                commentsOnPostList.remove(numcom-1);
+                postPanel.remove(numcom+1);
+
+                post.setAllComments(commentsOnPostList);
+                for (int i = 0; i <=post.getAllComments().size() ; i++) {
+                    if(i>numcom) {
+                        post.getAllComments().get(i).setCommentID(post.getAllComments().get(i).getCommentID()-1);
+                    }
+                }
+                numcom--;
+                frame.getContentPane().removeAll();  // or removeAll();
+
+                frame.getContentPane().add(newsFeedHomeContent);
+
+                frame.repaint();
+
+
+                frame.revalidate();
+
+            }
+        }
+    };
+
+
+
     @Override
     public void run() {
         // main frame
-        JFrame frame = new JFrame();
+        frame = new JFrame();
         frame.setSize(600, 400);
         frame.setTitle("Social Media");
         poster = new Poster(user);
@@ -230,12 +302,14 @@ public class PostGUI extends JComponent implements Runnable {
         newsFeedHomeContent.add(postPanel);  // CENTER
         newsFeedHomeContent.add(buttonPanel, BorderLayout.SOUTH);
 
-        //adding existing posts
+        // add actionListeners to the buttons in newsFeedHomeContent
+        //retrieving previous posts from file
+
+        //get current users here (client)
 
         allPosts = poster.readAll();
 
         if (allPosts != null) {
-
 
             for (Post post : allPosts) {
                 post.setPanelLoc(currentPosts.size());
@@ -259,15 +333,19 @@ public class PostGUI extends JComponent implements Runnable {
                 JButton combutton = new JButton("Comment");
                 int likes;
                 combutton.setPreferredSize(new Dimension(100, 20));
+                combutton.addActionListener(combuttonActionListener);
                 newPost.setBorder(bor);
                 newPost.add(label);
+                JPanel commentPanel = new JPanel(new GridLayout(0,1));
                 JPanel newCom = new JPanel();
                 newCom.setLayout(new FlowLayout());
                 newCom.add(comfield);
                 newCom.add(combutton);
+                commentPanel.add(newCom);
                 postPanel.add(newPost);
                 currentPosts.add(newPost);
-                postPanel.add(newCom);
+
+                newPost.add(commentPanel, BorderLayout.SOUTH);
                 //add existing comments here instead
             }
 
@@ -276,7 +354,6 @@ public class PostGUI extends JComponent implements Runnable {
             allPosts = new ArrayList<Post>();
         }
         frame.add(newsFeedHomeContent);  // first content shown after login is newsFeedHomeContent
-
 
         ActionListener editAction = new ActionListener() {
             @Override
@@ -377,7 +454,7 @@ public class PostGUI extends JComponent implements Runnable {
                             j++;
                         }
                         String whichPost = (String) JOptionPane.showInputDialog(null, "Which post would you like to delete?",
-                            "Delete Post", JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+                                "Delete Post", JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
                         if (whichPost != null) {
                             postPanel.removeAll();
                             String option = whichPost.substring(3, whichPost.length());
@@ -438,11 +515,6 @@ public class PostGUI extends JComponent implements Runnable {
             }
         });
 
-        //retrieving previous posts from file
-
-        //get current users here (client)
-
-
 
         // userHomeContent
         userHomeContent = new Container();
@@ -494,7 +566,7 @@ public class PostGUI extends JComponent implements Runnable {
             }
         });
 
-        nameButton = new JButton(user.getUsername());
+        nameButton = new JButton("username");
         nameButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 // send to news feed home
@@ -509,9 +581,8 @@ public class PostGUI extends JComponent implements Runnable {
 
                     userPosts = poster.readFromFile(user);
 
-
+                    panel = new JPanel();
 //                    userHomeContent.setLayout(new GridLayout(0, 1));
-
 
                     if (userPosts != null) {
                         for (Post post : userPosts) {
@@ -523,6 +594,7 @@ public class PostGUI extends JComponent implements Runnable {
                             JTextField comfield = new JTextField();
                             comfield.setPreferredSize(new Dimension(350, 20));
                             JButton combutton = new JButton("Comment");
+                            combutton.addActionListener(combuttonActionListener);
                             int likes;
                             combutton.setPreferredSize(new Dimension(100, 20));
                             newPost.setBorder(bor);
@@ -531,12 +603,13 @@ public class PostGUI extends JComponent implements Runnable {
                             newCom.setLayout(new FlowLayout());
                             newCom.add(comfield);
                             newCom.add(combutton);
-                            postGridLayoutPanel.add(newPost);
+                            panel.add(newPost);
                         }
                     }
 
 //                    userHomeContent.add(panel);
 
+                    postGridLayoutPanel.add(panel);
 
                     userHomeContent.add(postGridLayoutPanel);
 
@@ -596,13 +669,14 @@ public class PostGUI extends JComponent implements Runnable {
                     JButton combutton = new JButton("Comment");
                     int likes;
                     combutton.setPreferredSize(new Dimension(100, 20));
+                    combutton.addActionListener(combuttonActionListener);
                     newPost.setBorder(bor);
                     newPost.add(label);
                     JPanel newCom = new JPanel();
                     newCom.setLayout(new FlowLayout());
                     newCom.add(comfield);
                     newCom.add(combutton);
-                    JPanel panel = new JPanel(new BorderLayout());
+                    ArrayList<JPanel> panel = new ArrayList<>();
 
 
                     postPanel.add(newPost);
@@ -612,110 +686,10 @@ public class PostGUI extends JComponent implements Runnable {
 
                     poster.writeAll(allPosts);
                     postPanel.add(newCom);
-                    JLabel label1 = new JLabel();
+                    label1 = new JLabel();
                     JPanel temp= new JPanel();
-                    combutton.addActionListener(new ActionListener() {
-                        public void actionPerformed(ActionEvent e) {
-                            numlikes=0;
 
-                            numcom++;
-                            JPanel companel = new JPanel(new BorderLayout());
-                            String comtext = comfield.getText();
-                            comfield.setText("");
-                            templikeButton= new JButton("Likes "+numlikes);
-                            templikeButton.addActionListener(new ActionListener() {
-                                public void actionPerformed(ActionEvent e) {
-                                    //commentsOnPostList.get(numcom - 1).setLikes(commentsOnPostList.get(numcom - 1).getLikes() + 1);
-
-                                    numlikes++;
-                                    //System.out.println("printed");
-                                    templikeButton.setText("Likes "+numlikes);
-                                    commentsOnPostList.get(numcom-1).setLikes(numlikes);
-                                    frame.getContentPane().removeAll();  // or removeAll();
-
-                                    frame.getContentPane().add(newsFeedHomeContent);
-
-                                    frame.repaint();
-
-                                    frame.revalidate();
-                                }
-                            });
-                            tempeditButton= new JButton("Edit");
-                            tempdeleteButton = new JButton("Delete");
-                            templikeButton.setPreferredSize(new Dimension(110, 20));
-                            tempeditButton.setPreferredSize(new Dimension(60,20));
-                            tempeditButton.addActionListener(new ActionListener() {
-                                public void actionPerformed(ActionEvent e) {
-                                    String editedString = (JOptionPane.showInputDialog(null, "Enter the edited String.",
-                                            "Edit comment", JOptionPane.QUESTION_MESSAGE));
-                                    // Wonseok please add the code for editing the comment.
-                                    commentsOnPostList.get(numcom - 1).setComtext(editedString);
-                                    label1.setText(commentsOnPostList.get(numcom - 1).getCommentername() + " @ "+time+": " + commentsOnPostList.get(numcom - 1).getComtext());
-                                    frame.getContentPane().removeAll();  // or removeAll();
-
-                                    frame.getContentPane().add(newsFeedHomeContent);
-
-                                    frame.repaint();
-
-                                    frame.revalidate();
-
-                                }
-                            });
-
-
-                            tempdeleteButton.setPreferredSize(new Dimension(100,20));
-                            tempdeleteButton.addActionListener(new ActionListener() {
-                                public void actionPerformed(ActionEvent e) {
-                                    //System.out.println("deleted");
-                                    // Wonseok please add the code for editing the comment.
-                                    try {
-                                        if (!user.getAlias().equals(commentsOnPostList.get(numcom - 1).getCommentername())) {
-                                            throw new CreaterNotFoundException("Privlidges to edit not found!");
-                                        }
-                                    }catch( CreaterNotFoundException ef){
-                                        JOptionPane.showMessageDialog(null, "This post is not available for editing!",
-                                                "Error", JOptionPane.ERROR_MESSAGE);
-                                    }
-                                    //commentsOnPostList.get(numcom - 1).setComtext(editedString);
-                                    temp.removeAll();
-
-                                    frame.getContentPane().removeAll();  // or removeAll();
-
-                                    frame.getContentPane().add(newsFeedHomeContent);
-
-                                    frame.repaint();
-
-                                    frame.revalidate();
-
-                                }
-                            });
-
-                            Comment comtemp = new Comment(user.getAlias(), comtext, numlikes, time, numcom);
-                            commentsOnPostList.add(comtemp);
-
-
-                            label1.setText(commentsOnPostList.get(numcom - 1).getCommentername() + " @ "+time+": " + commentsOnPostList.get(numcom - 1).getComtext());
-                            //panel.removeAll();hthf
-
-                            //temp.removeAll();
-                            temp.add(label1);
-                            temp.add(templikeButton);
-                            temp.add(tempeditButton);
-                            temp.add(tempdeleteButton);
-                            panel.add(temp);
-                            //temp.removeAll();
-                            postPanel.add(panel);
-
-                            frame.getContentPane().removeAll();  // or removeAll();
-
-                            frame.getContentPane().add(newsFeedHomeContent);
-
-                            frame.repaint();
-
-                            frame.revalidate();
-
-                        }
-                    });
+                    combutton.addActionListener(combuttonActionListener);
 
                     currentPosts.add(newPost);
 
@@ -742,45 +716,6 @@ public class PostGUI extends JComponent implements Runnable {
     }
 
 
-
-//    public JPanel createComment(String comtext, String Time, User user) {
-//        numcom++;
-//        comment temp = new comment(user.getAlias(), comtext, 0, Time);
-//        commentsOnPostList.add(temp);
-//        JLabel label = new JLabel(temp.toString());
-//
-//        templikeButton = new JButton("Likes " + commentsOnPostList.get(numcom - 1).getLikes());
-//        templikeButton.addActionListener(new ActionListener() {
-//            public void actionPerformed(ActionEvent e) {
-//                commentsOnPostList.get(numcom - 1).setLikes(commentsOnPostList.get(numcom - 1).getLikes() + 1);
-//
-//            }
-//        });
-//        tempdeleteButton = new JButton("Delete");
-//        tempdeleteButton.addActionListener(new ActionListener() {
-//            public void actionPerformed(ActionEvent e) {
-//
-//                commentsOnPostList.remove(numcom - 1);
-//                // Wonseok please add the code to remove/makeInvisible the Panel for the comment
-//            }
-//        });
-//        tempeditButton = new JButton("Likes " + commentsOnPostList.get(numcom - 1).getLikes());
-//        tempeditButton.addActionListener(new ActionListener() {
-//            public void actionPerformed(ActionEvent e) {
-//                String editedString = (JOptionPane.showInputDialog(null, "Enter the edited String.",
-//                        "Post maker", JOptionPane.QUESTION_MESSAGE));
-//
-//                commentsOnPostList.get(numcom - 1).setComtext(editedString);
-//
-//            }
-//        });
-//
-//        commentLikeButton.add(templikeButton);
-//        JPanel commentOnPostPanel = new JPanel();
-//        commentOnPostPanel.add(label);
-//        commentOnPostPanel.add(commentLikeButton.get(numcom - 1));
-//        return commentOnPostPanel;
-//    }
 
     public static void main(String[] args) {
         // connections
