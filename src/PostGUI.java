@@ -115,7 +115,8 @@ public class PostGUI extends JComponent implements Runnable {
 
     //for posts
 
-    User user = new User("default", "default", "default"); //default
+    //User user = new User("default", "default", "default"); //default
+    User user;
     Post post; //post being written
     Poster poster; //for creating, editing, and deleting posts
 
@@ -578,7 +579,7 @@ public class PostGUI extends JComponent implements Runnable {
                     String[] time1 = timeArray[1].split(":");
                     String hour = time1[0];
                     String minute = time1[1];
-                    time = date + " " + hour + ":" + minute;
+                    time = " " + date + " " + hour + ":" + minute;
                     post = poster.createPost(user, contentTextArea.getText(), time0, time, currentPosts.size());
 
                     newPost = new JPanel();
