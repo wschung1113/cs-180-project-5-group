@@ -306,7 +306,7 @@ public class Poster {
             }
 
             br.close();
-            if (postStrings == null || postStrings.size() < 7) {
+            if (postStrings == null || postStrings.size() < 1) {
                 return null;
             }
 
@@ -448,7 +448,7 @@ public class Poster {
                 postStrings.add(line);
             }
 
-            if (postStrings == null || postStrings.size() < 7) {
+            if (postStrings == null || postStrings.size() < 1) {
                 return null;
             }
 

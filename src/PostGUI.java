@@ -230,7 +230,53 @@ public class PostGUI extends JComponent implements Runnable {
         newsFeedHomeContent.add(postPanel);  // CENTER
         newsFeedHomeContent.add(buttonPanel, BorderLayout.SOUTH);
 
-        // add actionListeners to the buttons in newsFeedHomeContent
+        //adding existing posts
+
+        allPosts = poster.readAll();
+
+        if (allPosts != null) {
+
+
+            for (Post post : allPosts) {
+                post.setPanelLoc(currentPosts.size());
+
+                JPanel panel = new JPanel();
+                LocalDateTime time0 = post.getTime0();
+                String timeString = post.getTime();
+                newPost = new JPanel();
+                newPost.setLayout(new BorderLayout());
+                User user1 = post.getUser();
+                if (user1.getUsername().equals(user.getUsername())) {
+                    userPosts.add(post);
+                }
+                poster.writeToFile(userPosts);
+
+                String title = user1.getUsername() + ":" + user1.getAlias() + timeString;
+                Border bor = BorderFactory.createTitledBorder(title);
+                JLabel label = new JLabel(post.getPostString());
+                JTextField comfield = new JTextField();
+                comfield.setPreferredSize(new Dimension(350, 20));
+                JButton combutton = new JButton("Comment");
+                int likes;
+                combutton.setPreferredSize(new Dimension(100, 20));
+                newPost.setBorder(bor);
+                newPost.add(label);
+                JPanel newCom = new JPanel();
+                newCom.setLayout(new FlowLayout());
+                newCom.add(comfield);
+                newCom.add(combutton);
+                postPanel.add(newPost);
+                currentPosts.add(newPost);
+                postPanel.add(newCom);
+                //add existing comments here instead
+            }
+
+            newsFeedHomeContent.add(postPanel);
+        } else {
+            allPosts = new ArrayList<Post>();
+        }
+        frame.add(newsFeedHomeContent);  // first content shown after login is newsFeedHomeContent
+
 
         ActionListener editAction = new ActionListener() {
             @Override
@@ -396,49 +442,6 @@ public class PostGUI extends JComponent implements Runnable {
 
         //get current users here (client)
 
-        allPosts = poster.readAll();
-
-        if (allPosts != null) {
-
-            for (Post post : allPosts) {
-                post.setPanelLoc(currentPosts.size());
-
-                JPanel panel = new JPanel();
-                LocalDateTime time0 = post.getTime0();
-                String timeString = post.getTime();
-                newPost = new JPanel();
-                newPost.setLayout(new BorderLayout());
-                User user1 = post.getUser();
-                if (user1.getUsername().equals(user.getUsername())) {
-                    userPosts.add(post);
-                }
-                poster.writeToFile(userPosts);
-
-                String title = user1.getUsername() + ":" + user1.getAlias() + timeString;
-                Border bor = BorderFactory.createTitledBorder(title);
-                JLabel label = new JLabel(post.getPostString());
-                JTextField comfield = new JTextField();
-                comfield.setPreferredSize(new Dimension(350, 20));
-                JButton combutton = new JButton("Comment");
-                int likes;
-                combutton.setPreferredSize(new Dimension(100, 20));
-                newPost.setBorder(bor);
-                newPost.add(label);
-                JPanel newCom = new JPanel();
-                newCom.setLayout(new FlowLayout());
-                newCom.add(comfield);
-                newCom.add(combutton);
-                postPanel.add(newPost);
-                currentPosts.add(newPost);
-                postPanel.add(newCom);
-                //add existing comments here instead
-            }
-
-            newsFeedHomeContent.add(postPanel);
-        } else {
-            allPosts = new ArrayList<Post>();
-        }
-        frame.add(newsFeedHomeContent);  // first content shown after login is newsFeedHomeContent
 
 
         // userHomeContent
@@ -508,6 +511,7 @@ public class PostGUI extends JComponent implements Runnable {
 
                     panel = new JPanel();
 //                    userHomeContent.setLayout(new GridLayout(0, 1));
+
 
                     if (userPosts != null) {
                         for (Post post : userPosts) {
