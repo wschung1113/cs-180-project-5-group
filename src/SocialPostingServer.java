@@ -2,10 +2,13 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.ArrayList;
 
 public class SocialPostingServer implements Runnable {
     private Socket socket;
     private int id;
+    ArrayList<User> allUsersInfo;
+    User accessingUser;
 
     public SocialPostingServer(Socket socket, int id) {
         this.socket = socket;
@@ -33,54 +36,64 @@ public class SocialPostingServer implements Runnable {
 
     }
 
+    public boolean validateUser(ArrayList<User> allUsersInfo, String username, String password) {
+        for (User user : allUsersInfo) {
+            if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean validateRegister(ArrayList<User> allUsersInfo,String username, String password, String alias) {
+        for (User user : allUsersInfo) {
+            if (user.getUsername().equals(username) && user.getPassword().equals(password) && user.getAlias().equals(alias)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public void run() {
         try {
 
-            BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            PrintWriter writer = new PrintWriter(socket.getOutputStream());
+            InputStream inputStream = socket.getInputStream();
+
+            ObjectInputStream ois = new ObjectInputStream(inputStream);
+
+            OutputStream outputStream = socket.getOutputStream();
+
+            ObjectOutputStream oos = new ObjectOutputStream(outputStream);
+
             LoginGUI loginGUI = new LoginGUI();
 
-            User user = new User("username", "password"); //
 
-            PostGUI postGUI = new PostGUI();
-            String serverMessage;
 
             // Read message from client
+            String serverMessage = (String) ois.readObject();
+            String[] userInfoArray = serverMessage.split(",");
 
-            try {
-                String userVerify = reader.readLine();
-                // Store username and password into an array
-                String[] userLogin = userVerify.split(",");
-                //Return response to client
-                // validate username and password (return a boolean type to decide to run the PostGUI)
-                if (userLogin[0].equals(loginGUI.storeInfo[0]) && userLogin[1].equals(loginGUI.storeInfo[1])) {
-                    serverMessage = "Correct\n";
-                } else {
-                    serverMessage = "Incorrect\n";
-                }
+            // Store username and password into an array
 
-                if (userLogin[0].equals(loginGUI.storeInfo[0]) && userLogin[1].equals(loginGUI.storeInfo[1]) && userLogin[2].equals(loginGUI.storeInfo[2])) {
-                    serverMessage = "Existed\n";
-                } else {
-                    serverMessage = "Registered\n";
-                }
+            //Return response to client
+            // validate username and password (return a boolean type to decide to run the PostGUI)
+            boolean loginValid = validateUser(loginGUI.allUsersInfo, userInfoArray[0], userInfoArray[1]);
+            boolean registerValid = validateRegister(loginGUI.allUsersInfo, userInfoArray[0], userInfoArray[1], userInfoArray[2]);
 
-                // Write message to client
-                writer.write(serverMessage);
-                writer.flush();
-                
-            } catch (SocketException e) {
-                e.printStackTrace();
-            }
+            // Write message to client
+            oos.writeObject(loginValid);
+            oos.writeObject(registerValid);
+            oos.flush();
+
+
+            //Close necessary objects
+            ois.close();
+            oos.close();
 
 
 
-           //Close necessary objects
-            writer.close();
-            reader.close();
-
-        } catch (IOException e) {
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
