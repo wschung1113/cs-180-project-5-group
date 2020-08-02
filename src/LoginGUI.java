@@ -76,6 +76,40 @@ public class LoginGUI extends JComponent implements Runnable {
         }
     }
 
+    // This method writes the ArrayList of user info into a file
+    public void writeUserInfo(ArrayList<User> userInfoArrayList) {
+        try {
+            FileOutputStream writeData = new FileOutputStream("userData.ser");
+            ObjectOutputStream writeStream = new ObjectOutputStream(writeData);
+
+            writeStream.writeObject(userInfoArrayList);
+            writeStream.flush();
+            writeStream.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // This method reads the ArrayList of user info from the file. Don't have implementation yet.
+    public ArrayList<User> readUserInfo() {
+        ArrayList<User> userInfoArrayList = new ArrayList<>();
+        try {
+
+            FileInputStream readData = new FileInputStream("userData.ser");
+            ObjectInputStream readStream = new ObjectInputStream(readData);
+
+            userInfoArrayList = (ArrayList<User>) readStream.readObject();
+            readStream.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return userInfoArrayList;
+    }
+
+
     ActionListener actionListener = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -103,8 +137,18 @@ public class LoginGUI extends JComponent implements Runnable {
                 try {
                     if (client.connect()) {
                         JOptionPane.showMessageDialog(null, "Account is successfully created");
+                        //Store user's storeInfo
+                        storeInfo[0] = username.getText();
+                        storeInfo[1] = password.getText();
+                        storeInfo[2] = alias.getText();
+                        FindSetUser(allUsersInfo, storeInfo[0]);
+                        User tempUser = new User(storeInfo[0], storeInfo[1], storeInfo[2]);
+                        allUsersInfo.add(tempUser);
+                        writeUserInfo(allUsersInfo);
                     } else {
-                        JOptionPane.showMessageDialog(null, "Account is existed");
+                        JOptionPane.showMessageDialog(null, "Account already existed");
+                        frame.dispose();
+                        frame1.dispose();
                     }
                     return;
                 } catch (IOException | ClassNotFoundException ioException) {
@@ -200,14 +244,6 @@ public class LoginGUI extends JComponent implements Runnable {
         loginPage.add(panel1, BorderLayout.CENTER);
     }
 
-    public boolean validateUser(ArrayList<User> allUsersInfo, String username, String password) {
-        for (int i = 0; i < allUsersInfo.size(); i++) {
-            if (allUsersInfo.get(i).getUsername().equals(username) && allUsersInfo.get(i).getPassword().equals(password)) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new LoginGUI());
@@ -227,4 +263,3 @@ public class LoginGUI extends JComponent implements Runnable {
         }
     }
 }
-
