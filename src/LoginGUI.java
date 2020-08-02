@@ -3,6 +3,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.io.*;
 
 
 public class LoginGUI extends JComponent implements Runnable {
@@ -22,6 +24,9 @@ public class LoginGUI extends JComponent implements Runnable {
     String[] storeInfo;
     JFrame frame;
     JFrame frame1;
+    ArrayList<User> allUsersInfo;
+    User accessingUser;
+
 
 
     public LoginGUI() {
@@ -36,21 +41,47 @@ public class LoginGUI extends JComponent implements Runnable {
         this.password = new JTextField(10);
         this.alias = new JTextField(10);
         storeInfo = new String[3];
+        allUsersInfo = new ArrayList<>();
+        User accessingUser;
+
     }
 
     public String[] getInfo() {
         return storeInfo;
     }
 
+    public ArrayList<User> getAllUsersInfo() { return allUsersInfo; }
+    public void setAllUsersInfo(ArrayList<User> allUsersInfo) { this.allUsersInfo = allUsersInfo; }
+
+    public void setAccessingUser(User accessingUser) {
+        this.accessingUser = accessingUser;
+    }
+
+    public User getAccessingUser() {
+        return accessingUser;
+    }
+    public void FindSetUser(ArrayList<User> allUsersInfo, String username){
+        accessingUser = new User(null,null,null);
+        if (allUsersInfo != null ) {
+            for (int i = 0; i < allUsersInfo.size(); i++) {
+                if ((allUsersInfo.get(i).getUsername()).equals(username)) {
+                    accessingUser = allUsersInfo.get(i);
+                }
+            }
+        }
+    }
+
     ActionListener actionListener = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            PostGUI postGUI = new PostGUI();
+
             if (e.getSource() == login) {
                 Client client = new Client(username.getText() + "," + password.getText());
                 try {
                     if (client.connect()) { //Client connects to server, check whether user is registered
                         JOptionPane.showMessageDialog(null, "You are logged in!");
+                        FindSetUser(allUsersInfo, username.getText());
+                        PostGUI postGUI = new PostGUI(accessingUser);
                         postGUI.run();
                     } else {
                         JOptionPane.showMessageDialog(null, "Incorrect username or password");
@@ -65,6 +96,13 @@ public class LoginGUI extends JComponent implements Runnable {
                 try {
                     if (client.connect()) {
                         JOptionPane.showMessageDialog(null, "Account is successfully created");
+                        //Store user's storeInfo
+                        storeInfo[0] = username.getText();
+                        storeInfo[1] = password.getText();
+                        storeInfo[2] = alias.getText();
+                        FindSetUser(allUsersInfo, storeInfo[0]);
+                        User tempUser= new User(storeInfo[0], storeInfo[1], storeInfo[2]);
+                        allUsersInfo.add(tempUser);
                     } else {
                         JOptionPane.showMessageDialog(null, "Account is existed");
                     }
@@ -121,13 +159,10 @@ public class LoginGUI extends JComponent implements Runnable {
                 enter.addActionListener(actionListener);
                 panel3.add(back);
                 panel3.add(enter);
-                //Store user's storeInfo
-                storeInfo[0] = username.getText();
-                storeInfo[1] = password.getText();
-                storeInfo[2] = alias.getText();
 
                 registerPage.add(panel2, BorderLayout.NORTH);
                 registerPage.add(panel3, BorderLayout.CENTER);
+
             }
         }
     };
@@ -157,6 +192,15 @@ public class LoginGUI extends JComponent implements Runnable {
         panel1.add(register);
         loginPage.add(panel, BorderLayout.NORTH);
         loginPage.add(panel1, BorderLayout.CENTER);
+    }
+
+    public boolean validateUser(ArrayList<User> allUsersInfo,String username, String password){
+        for (int i = 0; i <allUsersInfo.size() ; i++) {
+            if(allUsersInfo.get(i).getUsername().equals(username) && allUsersInfo.get(i).getPassword().equals(password)){
+                return true;
+            }
+        }
+        return false;
     }
 
     public static void main(String[] args) {

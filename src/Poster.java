@@ -238,9 +238,10 @@ public class Poster {
             sb.append(post.getTime());
             sb.append(";:;");
             sb.append(post.getPostString());
-            sb.append(";:;\n");
-                sb.append(";:;");
-                sb.append(post.getPanelLoc());
+
+            sb.append(";:;");
+            sb.append(post.getPanelLoc());
+            sb.append(";:;");
                 for (int i = 0; i < post.getAllComments().size() ; i++) {
                     Comment temp= new Comment();
                     temp= post.getAllComments().get(i);
@@ -293,28 +294,31 @@ public class Poster {
 
                 if (name.equals(user.getAlias())) {
                     String postString = postSplit[5];
-                    String[] commentSplit = postSplit[6].split(":::");
                     ArrayList<Comment> comments = new ArrayList<>();
-                    try {
-                        String[] allcoms = postSplit[4].split("::");
-                        for (int j = 0; j < allcoms.length; j++) {
-                            allcoms[i] = allcoms[i].replace("[", "");
-                            allcoms[i] = allcoms[i].replace("]", "");
-                            String[] comvalues = allcoms[i].split(",");
-                            String commentername1 = comvalues[0];
-                            String comstring1 = comvalues[1];
-                            int likes1 = Integer.parseInt(comvalues[2]);
-                            String Time1 = comvalues[3];
-                            int commentID1 = Integer.parseInt(comvalues[4]);
-                            JButton likeButton = new JButton();
-                            JButton editButton = new JButton();
-                            JButton deleteButton = new JButton();
-                            Comment tempcomment1 = new Comment(commentername1, comstring1, likes1, Time1, commentID1,
-                                    likeButton, editButton, deleteButton);
-                            comments.add(tempcomment1);
+                    if (postSplit.length > 7) { //will be shorter if no comments
+                        String[] commentSplit = postSplit[6].split(":::");
+
+                        try {
+                            String[] allcoms = postSplit[4].split("::");
+                            for (int j = 0; j < allcoms.length; j++) {
+                                allcoms[i] = allcoms[i].replace("[", "");
+                                allcoms[i] = allcoms[i].replace("]", "");
+                                String[] comvalues = allcoms[i].split(",");
+                                String commentername1 = comvalues[0];
+                                String comstring1 = comvalues[1];
+                                int likes1 = Integer.parseInt(comvalues[2]);
+                                String Time1 = comvalues[3];
+                                int commentID1 = Integer.parseInt(comvalues[4]);
+                                JButton likeButton = new JButton();
+                                JButton editButton = new JButton();
+                                JButton deleteButton = new JButton();
+                                Comment tempcomment1 = new Comment(commentername1, comstring1, likes1, Time1, commentID1,
+                                        likeButton, editButton, deleteButton);
+                                comments.add(tempcomment1);
+                            }
+                        } catch (NullPointerException ee) {
+                            ee.printStackTrace();
                         }
-                    }catch (NullPointerException ee){
-                        ee.printStackTrace();
                     }
                     Post post = new Post(user, name, postString, time0 , time, i, comments);
                     userPosts.add(post);
@@ -352,6 +356,7 @@ public class Poster {
     }
 
     public void writeAll(ArrayList<Post> allPosts) {
+        allPosts = Post.sortPosts(allPosts);
 
         try {
             File f = new File("allPosts.txt");
@@ -409,6 +414,10 @@ public class Poster {
 
             while ((line = br.readLine()) != null) {
                 postStrings.add(line);
+            }
+
+            if (postStrings == null || postStrings.size() < 7) {
+                return null;
             }
 
             br.close();

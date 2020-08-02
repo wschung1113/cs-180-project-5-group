@@ -137,14 +137,18 @@ public class Post {
             System.out.println("Error!  Cannot sort empty list");
             return null;
         }
+        int loc = 0;
 
         for (int i = length - 1; i > 0; i--) {
             for (int j = 0; j < i; j++) {
                 if (posts.get(j).getTime0().isAfter(posts.get(j + 1).getTime0())) {
                     temp = posts.get(j);
                     posts.set(j, (posts.get(j + 1)));
+                    posts.get(j).setPanelLoc(loc);
                     posts.set(j + 1, temp);
+                    posts.get(j + 1).setPanelLoc(j + 1);
                 }
+                loc++;
             }
         }
 
