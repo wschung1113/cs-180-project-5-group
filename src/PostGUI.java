@@ -8,6 +8,7 @@ import static javax.swing.JOptionPane.OK_OPTION;
 import static javax.swing.JOptionPane.YES_OPTION;
 
 import java.util.ArrayList;
+/// I pushed this class
 
 public class PostGUI extends JComponent implements Runnable {
     public PostGUI(User user) {  // constructor
