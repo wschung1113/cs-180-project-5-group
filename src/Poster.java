@@ -64,7 +64,7 @@ public class Poster {
     public void setFileName(String fileName) { this.fileName = fileName;}
 
     public static void main(String[] args) {
-        //for local test cases
+        //the main method exists exclusively for local test cases so that user files aren't changed that could impact the program
         ArrayList<Post> userPosts = new ArrayList<Post>();
 
 
@@ -85,13 +85,15 @@ public class Poster {
         ArrayList<Comment> comments = new ArrayList<Comment>();
         Post post = new Post(user, user.getAlias(), postString, time0, time, 0, comments);
         if (choice.equals("create")) {
-
             System.out.println(post.getPostString());
-
             Post post1 = poster.createPost(user, postString, time0, time, userPosts.size());
             System.out.println(post1.getPostString());
             Post post2 = userPosts.get(post1.getPanelLoc());
             System.out.println(post2.getPostString());
+        } else if (choice.equals("invalidCreate")) {
+            Post post1 = poster.createPost(null, null, LocalDateTime.now(), time, 0);
+            System.out.println(post1);
+
         } else if (choice.equals("read")) {
             ArrayList<Post> posts = poster.readFromFile(user);
             posts.add(post);
@@ -116,6 +118,29 @@ public class Poster {
         } else if (choice.equals("invalidPost")) {
             int loc = poster.findPost(user, "invalid", 0);
             System.out.println(loc);
+        } else if (choice.equals("readAll")) {
+            ArrayList<Post> posts = poster.readAll();
+            if (posts != null ) {
+                System.out.println("Posts read successfully.");
+            } else {
+                System.out.println("No posts to read.");
+            }
+        } else if (choice.equals("invalidReadAll")) {
+            ArrayList<Post> posts = poster.readAll();
+            if (posts != null) {
+                System.out.println("Posts read successfully.");
+            } else {
+                System.out.println("No posts to read.");
+            }
+        } else if (choice.equals("writeAll")) {
+            ArrayList<Post> allPosts = new ArrayList<Post>();
+            allPosts.add(post);
+            poster.writeAll(allPosts);
+            System.out.println("Posts written successfully.");
+        } else if (choice.equals("invalidWriteAll")) {
+            ArrayList<Post> allPosts = new ArrayList<Post>();
+            poster.writeAll(allPosts);  //this would be a null pointer exception if not accounted for in writeAll
+            System.out.println("No posts to write");
         }
 
     }
@@ -124,12 +149,17 @@ public class Poster {
 
         String name = user.getAlias();
         ArrayList<Comment> comments = new ArrayList<Comment>();
-        Post post = new Post(user, name, postString, time0, time, panelLoc, comments);
-        ArrayList<Post> userPosts = user.getPosts();
-        userPosts.add(post);
-        user.setPosts(userPosts);
-        writeToFile(userPosts);
-        return post;
+        if (user != null && postString != null) { //this would happen if read from file incorrectly
+            Post post = new Post(user, name, postString, time0, time, panelLoc, comments);
+            ArrayList<Post> userPosts = user.getPosts();
+            userPosts.add(post);
+            user.setPosts(userPosts);
+            writeToFile(userPosts);
+            return post;
+        } else {
+            return null;
+        }
+
 
 
     }
