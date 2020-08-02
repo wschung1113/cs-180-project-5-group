@@ -687,7 +687,7 @@ public class PostGUI extends JComponent implements Runnable {
                                 }
                             });
 
-                            Comment comtemp = new Comment(user.getAlias(), comtext, numlikes, time, numcom,templikeButton,tempeditButton,tempdeleteButton);
+                            Comment comtemp = new Comment(user.getAlias(), comtext, numlikes, time, numcom);
                             commentsOnPostList.add(comtemp);
 
 
