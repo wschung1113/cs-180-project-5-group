@@ -86,6 +86,8 @@ public class LoginGUI extends JComponent implements Runnable {
                     } else {
                         JOptionPane.showMessageDialog(null, "Incorrect username or password");
                     }
+                    frame.dispose();
+                    frame1.dispose();
                     return;
                 } catch (IOException | ClassNotFoundException ioException) {
                     ioException.printStackTrace();
@@ -106,6 +108,8 @@ public class LoginGUI extends JComponent implements Runnable {
                     } else {
                         JOptionPane.showMessageDialog(null, "Account is existed");
                     }
+                    frame.dispose();
+                    frame1.dispose();
                     return;
                 } catch (IOException | ClassNotFoundException ioException) {
                     ioException.printStackTrace();
