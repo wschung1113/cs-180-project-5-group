@@ -239,7 +239,7 @@ public class PostGUI extends JComponent implements Runnable {
         for (int i = 0; i < 8; i++) {  // add empty labels to display createPostButton on the top-right corner
             createPostPanel.add(new JLabel());
         }
-        createPostPanel.add(comfield);
+//        createPostPanel.add(comfield);
         createPostPanel.add(createPostButton);
         buttonPanel.add(editButton);
         buttonPanel.add(deleteButton);
