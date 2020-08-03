@@ -1,14 +1,14 @@
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
-import java.awt.event.*;
-import java.time.*;
-
-import static javax.swing.JOptionPane.OK_OPTION;
-import static javax.swing.JOptionPane.YES_OPTION;
-
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-/// I pushed this class
+
+import static javax.swing.JOptionPane.YES_OPTION;
 
 public class PostGUI extends JComponent implements Runnable {
     public PostGUI(User user) {  // constructor
@@ -55,12 +55,15 @@ public class PostGUI extends JComponent implements Runnable {
         this.alias = new JTextField(10);
         info = new ArrayList<>();
     }
+
     PostGUI postGUI;  // main post window
 
     int yesNo;  // takes input of JOptionPane after pressing a button
 
     int curX;  // current mouse x coordinate for click
     int curY;  // current mouse y coordinate for click
+
+    int likes = 0;
 
     String postType;  // whether the post is "Private" or "Public"
     String time; //time post was made
@@ -70,7 +73,7 @@ public class PostGUI extends JComponent implements Runnable {
     Container postContent;
     Container newsFeedHomeContent;
     Container userHomeContent;
-    int likes = 0;
+    Container commentContent;
 
     // Panels
     JPanel panel;
@@ -84,16 +87,16 @@ public class PostGUI extends JComponent implements Runnable {
     JPanel buttonHomePanel;
     JPanel createPostHomePanel;
     JLabel label1;
+    JPanel commentContentPanel;
 
     int numcom = 0;
+
     ArrayList<Comment> commentsOnPostList = new ArrayList<>();
     ArrayList<JButton> commentLikeButton = new ArrayList<>();
     ArrayList<JButton> commentEditButton = new ArrayList<>();
     ArrayList<JButton> commentDeleteButton = new ArrayList<>();
 
-
     ArrayList<String> likeOnComments = new ArrayList<>();
-    //int i=0;
     JButton templikeButton;
     JButton tempeditButton;
     JButton tempdeleteButton;
@@ -115,11 +118,12 @@ public class PostGUI extends JComponent implements Runnable {
     JButton deleteHomeButton; //allows user to delete post in user profile
     JButton createPostButton;
     JButton createPostHomeButton;
+    JButton myCommentsButton;
 
     //for posts
 
-//    User user = new User("default", "default", "default"); //default
-    User user;
+    User user = new User("default", "default", "default"); //default
+//    User user;
     Post post; //post being written
     Poster poster; //for creating, editing, and deleting posts
 
@@ -248,6 +252,7 @@ public class PostGUI extends JComponent implements Runnable {
                     }
                 }
                 numcom--;
+
                 frame.getContentPane().removeAll();  // or removeAll();
 
                 frame.getContentPane().add(newsFeedHomeContent);
@@ -301,11 +306,6 @@ public class PostGUI extends JComponent implements Runnable {
         newsFeedHomeContent.add(createPostPanel, BorderLayout.NORTH);
         newsFeedHomeContent.add(postPanel);  // CENTER
         newsFeedHomeContent.add(buttonPanel, BorderLayout.SOUTH);
-
-        // add actionListeners to the buttons in newsFeedHomeContent
-        //retrieving previous posts from file
-
-        //get current users here (client)
 
         allPosts = poster.readAll();
 
@@ -549,6 +549,49 @@ public class PostGUI extends JComponent implements Runnable {
         });
 
 
+        // commentContent
+        commentContent = new Container();
+        commentContent.setLayout(new BorderLayout());
+        commentContent.setSize(frame.getSize());  // set size of the content equal to that of the frame
+        commentContent.add(new PostGUI(), BorderLayout.CENTER);
+        myCommentsButton = new JButton("My Comments");
+        myCommentsButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // sends to commentContent
+                frame.getContentPane().removeAll();
+
+                frame.getContentPane().add(commentContent);
+
+                frame.repaint();
+
+                frame.revalidate();
+            }
+        });
+
+        // panel 1
+        JButton backButton = new JButton("Back");
+        backButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // sends back to userHome
+                frame.getContentPane().removeAll();
+
+                frame.getContentPane().add(userHomeContent);
+
+                frame.repaint();
+
+                frame.revalidate();
+            }
+        });
+        commentContentPanel = new JPanel();
+        commentContentPanel.setLayout(new GridLayout(1, 8));
+        commentContentPanel.add(backButton);
+        for (int i = 0; i < 7; i++) {
+            commentContentPanel.add(new JLabel());
+        }
+        commentContentPanel.add(backButton);
+        commentContent.add(commentContentPanel, BorderLayout.NORTH);
+
+
         // userHomeContent
         userHomeContent = new Container();
         userHomeContent.setLayout(new BorderLayout());
@@ -563,8 +606,9 @@ public class PostGUI extends JComponent implements Runnable {
         userHomeContent.add(buttonHomePanel, BorderLayout.SOUTH);
 
         JPanel createPostHomePanel = new JPanel();
-        createPostHomePanel.setLayout(new GridLayout(1, 8));
-        for (int i = 0; i < 8; i++) {  // add empty labels to display createPostButton on the top-right corner
+        createPostHomePanel.setLayout(new GridLayout(1, 5));
+        createPostHomePanel.add(myCommentsButton);
+        for (int i = 0; i < 3; i++) {
             createPostHomePanel.add(new JLabel());
         }
         createPostHomePanel.add(createPostHomeButton);
