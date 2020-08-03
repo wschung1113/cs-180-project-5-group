@@ -7,12 +7,8 @@ import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 
 import java.io.*;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.Random;
+import java.util.ArrayList;
 
-import static org.junit.Assert.assertEquals;
 /**
  * A framework to run public test cases.
  *
@@ -100,7 +96,7 @@ public class clientTest {
             try {
                 clazz.getDeclaredMethod("connect");
             } catch (NoSuchMethodException e) {
-                Assert.fail("Ensure that `Client` declares a method named `connect` that is `public`, has a return type of `String`, and has no parameters!");
+                Assert.fail("Ensure that `Client` declares a method named `connect` that is `public`, has a return type of `String`, and has 3 parameters!");
                 return;
             }
 
@@ -117,9 +113,11 @@ public class clientTest {
         public void clientRegistrationTest() throws IOException, ClassNotFoundException {
             String msg = "123,123,123";
             boolean ret;
+            ArrayList<User> users = new ArrayList<>();
+            users.add(new User("123", "123", "123"));
 
             Client client = new Client(msg);
-            ret = client.connect();
+            ret = client.connect(2, users , client);
             Assert.assertEquals(ret, true);
         } // registrationTest
 
@@ -127,12 +125,15 @@ public class clientTest {
         @Test(timeout = 1000)
         public void duplicateRegistrationTest() throws IOException, ClassNotFoundException {
             String[] msg = {"123,123,123","123,123,123"};
+            ArrayList<User> users = new ArrayList<>();
+            users.add(new User("123", "123", "123"));
+            users.add(new User("123", "123", "123"));
             boolean[] ret = new boolean[2];
             boolean[] ret1 = {true, false};
 
             for (int i = 0; i < msg.length; i++) {
                 Client client = new Client(msg[i]);
-                ret[i] = client.connect();
+                ret[i] = client.connect(2,users, client);
                 Assert.assertEquals(ret[i], ret1[i]);
             }
         } // duplicateTest
