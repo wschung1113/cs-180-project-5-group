@@ -7,12 +7,8 @@ import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 
 import java.io.*;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.Random;
+import java.net.Socket;
 
-import static org.junit.Assert.assertEquals;
 /**
  * A framework to run public test cases.
  *
@@ -21,7 +17,7 @@ import static org.junit.Assert.assertEquals;
  * @author Purdue CS
  * @version June 15, 2020
  */
-public class clientTest {
+public class serverTest {
     public static void main(String[] args) {
         Result result = JUnitCore.runClasses(TestCase.class);
         if (result.wasSuccessful()) {
@@ -84,28 +80,47 @@ public class clientTest {
         }
 
         @Test(timeout = 1000)
-        public void clientClassDeclarationTest() {
+        public void postClassDeclarationTest() {
             Class<?> clazz;
-            String message = "message";
+            String socket = "socket";
 
             clazz = Client.class;
 
             try {
-                clazz.getDeclaredConstructor(String.class);
+                clazz.getDeclaredConstructor(Socket.class, Integer.class);
             } catch (NoSuchMethodException e) {
-                Assert.fail("Ensure that `Client` declares a constructor that is `public` and has one parameter of type `String`!");
+                Assert.fail("Ensure that `SocialPostingServer` declares a constructor " +
+                        "that is `public` and has one parameter of type `Socket`!");
                 return;
             }
 
             try {
-                clazz.getDeclaredMethod("connect");
+                clazz.getDeclaredMethod("validateUser");
             } catch (NoSuchMethodException e) {
-                Assert.fail("Ensure that `Client` declares a method named `connect` that is `public`, has a return type of `String`, and has no parameters!");
+                Assert.fail("Ensure that `SocialPostingServer` declares a method " +
+                        "named `validateUser` that is `public`, has a return type of `String`, and has three parameters!");
                 return;
             }
 
             try {
-                clazz.getDeclaredField(message);
+                clazz.getDeclaredMethod("validateRegister");
+            } catch (NoSuchMethodException e) {
+                Assert.fail("Ensure that `SocialPostingServer` declares a method " +
+                        "named `validateRegister` that is `public`, has a return type of `String`, and has three parameters!");
+                return;
+            }
+
+            // TODO: add more declaration validations here
+
+            try {
+                clazz.getDeclaredField(socket);
+            } catch (NoSuchFieldException e) {
+                Assert.fail("Ensure that `Client` declares an attribute named `socket` that is `public`, has a return type of `String`, and has no parameters!");
+                return;
+            }
+
+            try {
+                clazz.getDeclaredField("id");
             } catch (NoSuchFieldException e) {
                 Assert.fail("Ensure that `Client` declares an attribute named `message` that is `public`, has a return type of `String`, and has no parameters!");
                 return;

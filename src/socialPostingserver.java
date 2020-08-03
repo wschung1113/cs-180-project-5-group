@@ -1,16 +1,15 @@
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketException;
 import java.util.ArrayList;
 
-public class SocialPostingServer implements Runnable {
+public class socialPostingserver implements Runnable {
     private Socket socket;
     private int id;
     ArrayList<User> allUsersInfo;
     User accessingUser;
 
-    public SocialPostingServer(Socket socket, int id) {
+    public socialPostingserver(Socket socket, int id) {
         this.socket = socket;
         this.id = id;
     }
@@ -27,7 +26,7 @@ public class SocialPostingServer implements Runnable {
             ServerSocket serverSocket = new ServerSocket(4242);
             Socket socket = serverSocket.accept();
 
-            SocialPostingServer server = new SocialPostingServer(socket, currentClient);
+            socialPostingserver server = new socialPostingserver(socket, currentClient);
             //Call {@code run}
             new Thread(server).start();
             System.out.printf("Client %d has connected\n", currentClient);
