@@ -118,8 +118,8 @@ public class clientTest {
             users.add(new User("123", "123", "123"));
 
             Client client = new Client(msg);
-            ret = client.connect(2, users , client);
-            Assert.assertEquals(ret, true);
+            ret = client.connect(0, users , client);
+            Assert.assertEquals(ret, false);
         } // registrationTest
 
 
@@ -130,11 +130,11 @@ public class clientTest {
             users.add(new User("123", "123", "123"));
             users.add(new User("123", "123", "123"));
             boolean[] ret = new boolean[2];
-            boolean[] ret1 = {true, false};
+            boolean[] ret1 = {true, true};
 
             for (int i = 0; i < msg.length; i++) {
                 Client client = new Client(msg[i]);
-                ret[i] = client.connect(2,users, client);
+                ret[i] = client.connect(1,users, client);
                 Assert.assertEquals(ret[i], ret1[i]);
             }
         } // duplicateTest
