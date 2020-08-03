@@ -1,21 +1,23 @@
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.ArrayList;
 
-public class socialPostingserver implements Runnable {
+public class SocialPostingServer implements Runnable {
     private Socket socket;
     private int id;
     ArrayList<User> allUsersInfo;
     User accessingUser;
 
-    public socialPostingserver(Socket socket, int id) {
+    public SocialPostingServer(Socket socket, int id) {
         this.socket = socket;
         this.id = id;
     }
 
     public static void main(String[] args) throws IOException, ClassNotFoundException {
 
+        ServerSocket serverSocket = new ServerSocket(4242);
         int currentClient = 1;
 
         //Handle Multiple Clients Simultaneously
@@ -23,10 +25,10 @@ public class socialPostingserver implements Runnable {
 
             //Listen for client connection
             System.out.println("Waiting for the client to connect...");
-            ServerSocket serverSocket = new ServerSocket(4242);
+
             Socket socket = serverSocket.accept();
 
-            socialPostingserver server = new socialPostingserver(socket, currentClient);
+            SocialPostingServer server = new SocialPostingServer(socket, currentClient);
             //Call {@code run}
             new Thread(server).start();
             System.out.printf("Client %d has connected\n", currentClient);
