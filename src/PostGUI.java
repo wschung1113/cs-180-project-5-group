@@ -603,13 +603,12 @@ public class PostGUI extends JComponent implements Runnable {
                             newCom.setLayout(new FlowLayout());
                             newCom.add(comfield);
                             newCom.add(combutton);
-                            panel.add(newPost);
+                            postGridLayoutPanel.add(newPost);
                         }
                     }
 
 //                    userHomeContent.add(panel);
 
-                    postGridLayoutPanel.add(panel);
 
                     userHomeContent.add(postGridLayoutPanel);
 
