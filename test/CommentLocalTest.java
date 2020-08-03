@@ -11,7 +11,18 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.lang.reflect.Modifier;
-
+/**
+ * Project 5 -- Option 1 -- Group Project
+ *
+ *
+ *
+ * Our project implements a social posting application allowing multiple users to communicate simultaneously.
+ *
+ * @author Soham Arora, Mackenna Hawes, Lingbo Fang, Leo Dao, Wonseok Chung
+ *
+ * @version August 3rd, 2020
+ *
+ */
 public class CommentLocalTest {
     public static void main(String[] args) {
         Result result = JUnitCore.runClasses(TestCase.class);

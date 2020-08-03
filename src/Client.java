@@ -1,9 +1,21 @@
-import javax.swing.*;
-import java.io.*;
-import java.lang.reflect.Array;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Scanner;
+
+/**
+ * Project 5 -- Option 1 -- Group Project
+ *
+ *
+ *
+ * Our project implements a social posting application allowing multiple users to communicate simultaneously.
+ *
+ * @author Soham Arora, Mackenna Hawes, Lingbo Fang, Leo Dao, Wonseok Chung
+ *
+ * @version August 3rd, 2020
+ *
+ */
 
 public class Client {
     String message;

@@ -1,9 +1,21 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
-import static javax.swing.JOptionPane.YES_OPTION;
+/**
+ * Project 5 -- Option 1 -- Group Project
+ *
+ *
+ *
+ * Our project implements a social posting application allowing multiple users to communicate simultaneously.
+ *
+ * @author Soham Arora, Mackenna Hawes, Lingbo Fang, Leo Dao, Wonseok Chung
+ *
+ * @version August 3rd, 2020
+ *
+ */
 
 public class CommentGUI extends JComponent implements Runnable {
     CommentGUI commentGUI;  // main comment window
