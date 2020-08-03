@@ -113,14 +113,14 @@ public class PosterRunLocalTest {
             Field fileField;
             Method createPostMethod;
             Method editPostMethod;
-            Method deletePostMethod;
+
             Method writeToFileMethod;
             Method readFromFileMethod;
             Method readAllMethod;
             Method writeAllMethod;
             String createPost = "createPost";
             String editPost = "editPost";
-            String deletePost = "deletePost";
+
             String write = "writeToFile";
             String read = "readFromFile";
             String readAll = "readAll";
@@ -171,13 +171,6 @@ public class PosterRunLocalTest {
                 return;
             } //end try catch
 
-            try {
-                deletePostMethod = clazz.getDeclaredMethod(deletePost);
-            } catch (NoSuchMethodException e) {
-                Assert.fail("Ensure that `Poster` declares a method named `createPostMethod` that is `public`, has a return type of void', and has two parameters!");
-
-                return;
-            } //end try catch
 
             try {
                 writeToFileMethod = clazz.getDeclaredMethod(write);

@@ -217,34 +217,6 @@ public class Poster {
 
     }
 
-    /**
-     *deletes post from file
-     *
-     * @param user - user that is trying to delete the post
-     * @param postString - text in post
-     */
-
-    public void deletePost(User user, String postString) {
-        ArrayList<Post> userPosts = readFromFile(user);
-        int loc = 0;
-        for (Post post : userPosts) {
-            if (post.getPostString().equals(postString)) {
-                break;
-            }
-            loc++;
-        }
-
-        int length = userPosts.size();
-
-        for (int i = loc; i < length - 1; i++) {
-            userPosts.set(i, userPosts.get(i + 1));
-        }
-        writeToFile(userPosts);
-        user.setPosts(userPosts);
-
-        //still need to make it so it's no longer visible
-    }
-
     public void writeToFile(ArrayList<Post> userPosts) {
 
         try {
