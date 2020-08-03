@@ -128,29 +128,29 @@ public class serverTest {
 
         }
 
-        @Test(timeout = 1000)
-        public void clientRegistrationTest() throws IOException, ClassNotFoundException {
-            String msg = "123,123,123";
-            boolean ret;
-
-            Client client = new Client(msg);
-            ret = client.connect();
-            Assert.assertEquals(ret, true);
-        } // registrationTest
-
-
-        @Test(timeout = 1000)
-        public void duplicateRegistrationTest() throws IOException, ClassNotFoundException {
-            String[] msg = {"123,123,123","123,123,123"};
-            boolean[] ret = new boolean[2];
-            boolean[] ret1 = {true, false};
-
-            for (int i = 0; i < msg.length; i++) {
-                Client client = new Client(msg[i]);
-                ret[i] = client.connect();
-                Assert.assertEquals(ret[i], ret1[i]);
-            }
-        } // duplicateTest
+//        @Test(timeout = 1000)
+//        public void clientRegistrationTest() throws IOException, ClassNotFoundException {
+//            String msg = "123,123,123";
+//            boolean ret;
+//
+//            Client client = new Client(msg);
+//            ret = client.connect();
+//            Assert.assertEquals(ret, true);
+//        } // registrationTest
+//
+//
+//        @Test(timeout = 1000)
+//        public void duplicateRegistrationTest() throws IOException, ClassNotFoundException {
+//            String[] msg = {"123,123,123","123,123,123"};
+//            boolean[] ret = new boolean[2];
+//            boolean[] ret1 = {true, false};
+//
+//            for (int i = 0; i < msg.length; i++) {
+//                Client client = new Client(msg[i]);
+//                ret[i] = client.connect();
+//                Assert.assertEquals(ret[i], ret1[i]);
+//            }
+//        } // duplicateTest
 
     }
 
