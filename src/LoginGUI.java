@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.io.*;
 
-
 public class LoginGUI extends JComponent implements Runnable {
 
     JButton login; //login button
@@ -88,14 +87,8 @@ public class LoginGUI extends JComponent implements Runnable {
 
             if (userInfoArrayList != null) {
                 for (User user : userInfoArrayList) {
-                    StringBuilder sb = new StringBuilder();
-                    sb.append(user.getUsername());
-                    sb.append(";");
-                    sb.append(user.getPassword());
-                    sb.append(";");
-                    sb.append(user.getAlias());
-                    sb.append("\n");
-                    pw.write(sb.toString());
+                    String sb = user.getUsername() + ";" + user.getPassword() + ";" + user.getAlias() + "\n";
+                    pw.write(sb);
                 }
             }
             pw.close();
@@ -104,7 +97,7 @@ public class LoginGUI extends JComponent implements Runnable {
         }
     }
 
-    // This method reads the ArrayList of user info from the file. Don't have implementation yet.
+    // This method reads the ArrayList of user info from the file.
     public ArrayList<User> readUserInfo() {
         ArrayList<User> userInfoArrayList = new ArrayList<>();
         try {
@@ -118,16 +111,20 @@ public class LoginGUI extends JComponent implements Runnable {
             while ((line = br.readLine()) != null) {
                 userStrings.add(line);
             }
-            for (String line1 : userStrings) {
-                String[] userSplit = line1.split(";");
 
-                String userName = userSplit[0];
-                String password = userSplit[1];
-                String alias = userSplit[2];
+            if (f.length() != 0) {
+                for (String line1 : userStrings) {
+                    String[] userSplit = line1.split(";");
+                    if (userSplit.length == 3) {
+                        String userName = userSplit[0];
+                        String password = userSplit[1];
+                        String alias = userSplit[2];
+                        User user = new User(userName, password, alias);
+                        userInfoArrayList.add(user);
+                    }
 
-                User user = new User(userName, password, alias);
-                userInfoArrayList.add(user);
-                br.close();
+                    br.close();
+                }
             }
 
         } catch (Exception e) {
@@ -137,7 +134,6 @@ public class LoginGUI extends JComponent implements Runnable {
 
         return userInfoArrayList;
     }
-
 
     ActionListener actionListener = new ActionListener() {
         @Override
@@ -240,7 +236,6 @@ public class LoginGUI extends JComponent implements Runnable {
 
                 registerPage.add(panel2, BorderLayout.NORTH);
                 registerPage.add(panel3, BorderLayout.CENTER);
-                //Store user's storeInfo
 
             }
         }
@@ -273,18 +268,15 @@ public class LoginGUI extends JComponent implements Runnable {
         loginPage.add(panel1, BorderLayout.CENTER);
     }
 
-
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new LoginGUI());
     }
-
 
     public void readFile(String FileName) {
         try {
             File f = new File("allPosts.txt");
             FileReader fr = new FileReader(f);
             BufferedReader br = new BufferedReader(fr);
-
 
         } catch (IOException e) {
             e.printStackTrace();
