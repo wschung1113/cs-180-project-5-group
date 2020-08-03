@@ -325,36 +325,34 @@ public class Poster {
                 LocalDateTime time0 = LocalDateTime.parse(postSplit[3]);
                 String time = postSplit[4];
 
-                if (name.equals(user.getAlias())) {
-                    String postString = postSplit[5];
-                    ArrayList<Comment> comments = new ArrayList<>();
-                    if (postSplit.length > 7) { //will be shorter if no comments
-                        String[] commentSplit = postSplit[6].split(":::");
+                String postString = postSplit[5];
+                ArrayList<Comment> comments = new ArrayList<>();
+                if (postSplit.length > 8) { //will be shorter if no comments
+                    String[] commentSplit = postSplit[6].split(":::");
 
-                        try {
-                            String[] allcoms = postSplit[4].split("::");
-                            for (int j = 0; j < allcoms.length; j++) {
-                                allcoms[i] = allcoms[i].replace("[", "");
-                                allcoms[i] = allcoms[i].replace("]", "");
-                                String[] comvalues = allcoms[i].split(",");
-                                String commentername1 = comvalues[0];
-                                String comstring1 = comvalues[1];
-                                int likes1 = Integer.parseInt(comvalues[2]);
-                                String Time1 = comvalues[3];
-                                int commentID1 = Integer.parseInt(comvalues[4]);
-                                JButton likeButton = new JButton();
-                                JButton editButton = new JButton();
-                                JButton deleteButton = new JButton();
-                                Comment tempcomment1 = new Comment(commentername1, comstring1, likes1, Time1, commentID1);
-                                comments.add(tempcomment1);
-                            }
-                        } catch (NullPointerException ee) {
-                            ee.printStackTrace();
+                    try {
+                        String[] allcoms = postSplit[4].split("::");
+                        for (int j = 0; j < allcoms.length; j++) {
+                            allcoms[i] = allcoms[i].replace("[", "");
+                            allcoms[i] = allcoms[i].replace("]", "");
+                            String[] comvalues = allcoms[i].split(",");
+                            String commentername1 = comvalues[0];
+                            String comstring1 = comvalues[1];
+                            int likes1 = Integer.parseInt(comvalues[2]);
+                            String Time1 = comvalues[3];
+                            int commentID1 = Integer.parseInt(comvalues[4]);
+                            JButton likeButton = new JButton();
+                            JButton editButton = new JButton();
+                            JButton deleteButton = new JButton();
+                            Comment tempcomment1 = new Comment(commentername1, comstring1, likes1, Time1, commentID1);
+                            comments.add(tempcomment1);
                         }
+                    } catch (NullPointerException ee) {
+                            ee.printStackTrace();
                     }
-                    Post post = new Post(user, name, postString, time0 , time, i, comments);
-                    userPosts.add(post);
                 }
+                Post post = new Post(user, name, postString, time0 , time, i, comments);
+                userPosts.add(post);
                 i++;
             }
             user.setPosts(userPosts);

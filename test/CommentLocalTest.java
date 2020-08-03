@@ -1,4 +1,4 @@
-import org.junit.After;
+/**import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,7 +35,7 @@ public class CommentLocalTest {
      *
      * @author Purdue CS
      * @version August 02, 2020
-     */
+
     public static class TestCase {
         private final PrintStream originalOutput = System.out;
         private final InputStream originalSysin = System.in;
@@ -211,4 +211,4 @@ public class CommentLocalTest {
     }
 }
 
-
+*/
