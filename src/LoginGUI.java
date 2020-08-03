@@ -90,11 +90,11 @@ public class LoginGUI extends JComponent implements Runnable {
                 for (User user : userInfoArrayList) {
                     StringBuilder sb = new StringBuilder();
                     sb.append(user.getUsername());
-                    sb.append(";  ");
+                    sb.append(";");
                     sb.append(user.getPassword());
-                    sb.append(";  ");
+                    sb.append(";");
                     sb.append(user.getAlias());
-                    sb.append(";  \n");
+                    sb.append("\n");
                     pw.write(sb.toString());
                 }
             }
@@ -119,7 +119,7 @@ public class LoginGUI extends JComponent implements Runnable {
                 userStrings.add(line);
             }
             for (String line1 : userStrings) {
-                String[] userSplit = line1.split(";  ");
+                String[] userSplit = line1.split(";");
 
                 String userName = userSplit[0];
                 String password = userSplit[1];
@@ -176,6 +176,7 @@ public class LoginGUI extends JComponent implements Runnable {
                         User tempUser = new User(storeInfo[0], storeInfo[1], storeInfo[2]);
                         allUsersInfo.add(tempUser);
                         writeUserInfo(allUsersInfo);
+
                         PostGUI postGUI = new PostGUI(tempUser);
                         postGUI.run();
                         frame.dispose();
