@@ -68,6 +68,21 @@ method. It returns the index of the post if it is found, and the size of the Arr
 if not.  Testing on this involved ensuring that it reads from the correct file
 each time, but doesn't change the contents of the ArrayList.
 
+The readAll method reads all posts made by any user on the platform.  It also
+reads in comments on those posts if they exist, but doesn't attempt to if they
+don't to prevent an ArrayOutOfBoundsException.  To ensure it worked, we tested
+it with empty arrays and for posts with and without comments. We also tested
+it for posts made by multiple users to ensure they were distinguishable. 
+
+The writeAll method writes all posts made by any user into a file.  It
+also writes the comments made on those posts.  If there are no posts, it
+doesn't attempt to write, so there isn't a null pointer or ArrayOutOfBoundsException.
+We tested this with empty arrays and for posts with and without comments.  We also tested
+it for posts made by multiple users to ensure they were distinguishable. 
+
+
+
+
 
 
 
