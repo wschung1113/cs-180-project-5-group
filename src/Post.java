@@ -133,7 +133,7 @@ public class Post {
         int length = posts.size();
         Post temp;
 
-        if (length == 0) {
+        if (posts == null || length == 0) {
             System.out.println("Error!  Cannot sort empty list");
             return null;
         }
