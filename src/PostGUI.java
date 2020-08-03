@@ -302,14 +302,15 @@ public class PostGUI extends JComponent implements Runnable {
                         null, JOptionPane.YES_NO_OPTION);
                 if (yesNo == JOptionPane.YES_OPTION) {
                     userPosts = poster.readFromFile(user);
+                    allPosts = poster.readAll();
 
-                    if (userPosts.size() == 0) {
+                    if (allPosts == null || allPosts.size() == 0) {
                         JOptionPane.showMessageDialog(null, "Error! No posts available for commenting on.",
                                 null, JOptionPane.ERROR_MESSAGE);
                     } else {
-                        String[] options = new String[userPosts.size()];
+                        String[] options = new String[allPosts.size()];
                         int j = 1;
-                        for (Post post : userPosts) {
+                        for (Post post : allPosts) {
                             options[j - 1] = j + ": " + post.getPostString();
                             j++;
                         }
@@ -364,7 +365,7 @@ public class PostGUI extends JComponent implements Runnable {
                             tempCommentArrayList = post.getAllComments();
                             tempCommentArrayList.add(tempcomment);
                             post.setAllComments(tempCommentArrayList);
-                            editedPost.add(commentlabel);
+                            editedPost.add(commentlabel, BorderLayout.SOUTH);
                             //editedPost.add(tempeditButton);
 
                             currentPosts.set(post.getPanelLoc(), editedPost);
