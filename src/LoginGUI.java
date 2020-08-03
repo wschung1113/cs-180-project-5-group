@@ -11,7 +11,7 @@ public class LoginGUI extends JComponent implements Runnable {
 
     JButton login; //login button
     JButton register; //Register button
-    JButton enter; //Enter button
+    JButton enterButton; //Enter button
     JButton back; //Back button
     JLabel usernameLabel;
     JLabel passwordLabel;
@@ -31,7 +31,7 @@ public class LoginGUI extends JComponent implements Runnable {
     public LoginGUI() {
         this.login = new JButton("Login");
         this.register = new JButton("No account? Sign up here");
-        this.enter = new JButton("Enter");
+        this.enterButton = new JButton("Enter");
         this.back = new JButton("Back");
         this.usernameLabel = new JLabel("Username:");
         this.passwordLabel = new JLabel("Password:");
@@ -71,21 +71,34 @@ public class LoginGUI extends JComponent implements Runnable {
             for (int i = 0; i < allUsersInfo.size(); i++) {
                 if ((allUsersInfo.get(i).getUsername()).equals(username)) {
                     accessingUser = allUsersInfo.get(i);
+                    return;
                 }
             }
         }
+
+        return;
     }
 
     // This method writes the ArrayList of user info into a file
     public void writeUserInfo(ArrayList<User> userInfoArrayList) {
         try {
-            FileOutputStream writeData = new FileOutputStream("userData.ser");
-            ObjectOutputStream writeStream = new ObjectOutputStream(writeData);
+            File f = new File("userData.txt");
+            FileOutputStream fos = new FileOutputStream(f);
+            PrintWriter pw = new PrintWriter(fos);
 
-            writeStream.writeObject(userInfoArrayList);
-            writeStream.flush();
-            writeStream.close();
-
+            if (userInfoArrayList != null) {
+                for (User user : userInfoArrayList) {
+                    StringBuilder sb = new StringBuilder();
+                    sb.append(user.getUsername());
+                    sb.append(";  ");
+                    sb.append(user.getPassword());
+                    sb.append(";  ");
+                    sb.append(user.getAlias());
+                    sb.append(";  \n");
+                    pw.write(sb.toString());
+                }
+            }
+            pw.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -96,15 +109,31 @@ public class LoginGUI extends JComponent implements Runnable {
         ArrayList<User> userInfoArrayList = new ArrayList<>();
         try {
 
-            FileInputStream readData = new FileInputStream("userData.ser");
-            ObjectInputStream readStream = new ObjectInputStream(readData);
+            File f = new File("userData.txt");
+            FileReader fr = new FileReader(f);
+            BufferedReader br = new BufferedReader(fr);
+            String line;
+            ArrayList<String> userStrings = new ArrayList<String>();
 
-            userInfoArrayList = (ArrayList<User>) readStream.readObject();
-            readStream.close();
+            while ((line = br.readLine()) != null) {
+                userStrings.add(line);
+            }
+            for (String line1 : userStrings) {
+                String[] userSplit = line1.split(";  ");
+
+                String userName = userSplit[0];
+                String password = userSplit[1];
+                String alias = userSplit[2];
+
+                User user = new User(userName, password, alias);
+                userInfoArrayList.add(user);
+                br.close();
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+
 
         return userInfoArrayList;
     }
@@ -117,38 +146,43 @@ public class LoginGUI extends JComponent implements Runnable {
             if (e.getSource() == login) {
                 Client client = new Client(username.getText() + "," + password.getText());
                 try {
-                    if (client.connect()) { //Client connects to server, check whether user is registered
+                    allUsersInfo = readUserInfo();
+                    FindSetUser(allUsersInfo, username.getText());
+                    Client client1 = new Client(accessingUser.getUsername() + "," + accessingUser.getPassword() + "," + accessingUser.getAlias());
+                    if (client.connect(0, allUsersInfo, client1)) { //Client connects to server, check whether user is registered
                         JOptionPane.showMessageDialog(null, "You are logged in!");
                         FindSetUser(allUsersInfo, username.getText());
                         PostGUI postGUI = new PostGUI(accessingUser);
                         postGUI.run();
+                        frame.dispose();
+                        return;
                     } else {
                         JOptionPane.showMessageDialog(null, "Incorrect username or password");
                     }
-                    frame.dispose();
-                    frame1.dispose();
-                    return;
                 } catch (IOException | ClassNotFoundException ioException) {
                     ioException.printStackTrace();
                 }
             }
-            if (e.getSource() == enter) { //Client connects to server, check whether there is a duplicate user
-                Client client = new Client(username.getText() + "," + password.getText() + "," + alias.getText());
+            if (e.getSource() == enterButton) { //Client connects to server, check whether there is a duplicate user
                 try {
-                    if (client.connect()) {
-                        JOptionPane.showMessageDialog(null, "Account is successfully created");
-                        //Store user's storeInfo
-                        storeInfo[0] = username.getText();
-                        storeInfo[1] = password.getText();
-                        storeInfo[2] = alias.getText();
-                        FindSetUser(allUsersInfo, storeInfo[0]);
+                    storeInfo[0] = username.getText();
+                    storeInfo[1] = password.getText();
+                    storeInfo[2] = alias.getText();
+                    allUsersInfo = readUserInfo();
+                    Client client = new Client(storeInfo[0] + "," + storeInfo[1] + "," + storeInfo[2]);
+                    if (client.connect(1, allUsersInfo, client)) {
+                        allUsersInfo = readUserInfo();
+                        JOptionPane.showMessageDialog(null, "Account was successfully created");
                         User tempUser = new User(storeInfo[0], storeInfo[1], storeInfo[2]);
                         allUsersInfo.add(tempUser);
                         writeUserInfo(allUsersInfo);
-                    } else {
-                        JOptionPane.showMessageDialog(null, "Account already existed");
+                        PostGUI postGUI = new PostGUI(tempUser);
+                        postGUI.run();
                         frame.dispose();
                         frame1.dispose();
+                        return;
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Account already existed");
                     }
                     return;
                 } catch (IOException | ClassNotFoundException ioException) {
@@ -174,7 +208,7 @@ public class LoginGUI extends JComponent implements Runnable {
                 JPanel panel1 = new JPanel();
                 login.addActionListener(actionListener);
                 register.addActionListener(actionListener);
-                enter.addActionListener(actionListener);
+
                 panel1.add(login);
                 panel1.add(register);
                 loginPage.add(panel, BorderLayout.NORTH);
@@ -186,7 +220,7 @@ public class LoginGUI extends JComponent implements Runnable {
                 frame1.setSize(600, 100);
                 frame1.setTitle("Sign up page");
                 frame1.setLocationRelativeTo(null);
-                frame1.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame1.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                 frame1.setVisible(true);
                 registerPage = frame1.getContentPane();
                 registerPage.setLayout(new BorderLayout());
@@ -200,19 +234,13 @@ public class LoginGUI extends JComponent implements Runnable {
                 panel2.add(alias);
                 JPanel panel3 = new JPanel();
                 back.addActionListener(actionListener);
-                enter.addActionListener(actionListener);
                 panel3.add(back);
-                panel3.add(enter);
+                panel3.add(enterButton);
 
                 registerPage.add(panel2, BorderLayout.NORTH);
                 registerPage.add(panel3, BorderLayout.CENTER);
                 //Store user's storeInfo
-                storeInfo[0] = username.getText();
-                storeInfo[1] = password.getText();
-                storeInfo[2] = alias.getText();
-                FindSetUser(allUsersInfo, storeInfo[0]);
-                User tempUser = new User(storeInfo[0], storeInfo[1], storeInfo[2]);
-                allUsersInfo.add(tempUser);
+
             }
         }
     };
@@ -237,7 +265,7 @@ public class LoginGUI extends JComponent implements Runnable {
         JPanel panel1 = new JPanel();
         login.addActionListener(actionListener);
         register.addActionListener(actionListener);
-        enter.addActionListener(actionListener);
+        enterButton.addActionListener(actionListener);
         panel1.add(login);
         panel1.add(register);
         loginPage.add(panel, BorderLayout.NORTH);

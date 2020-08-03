@@ -16,7 +16,7 @@ public class SocialPostingServer implements Runnable {
     }
 
     public static void main(String[] args) throws IOException, ClassNotFoundException {
-        ServerSocket serverSocket = new ServerSocket(4242);
+
         int currentClient = 1;
 
         //Handle Multiple Clients Simultaneously
@@ -24,6 +24,7 @@ public class SocialPostingServer implements Runnable {
 
             //Listen for client connection
             System.out.println("Waiting for the client to connect...");
+            ServerSocket serverSocket = new ServerSocket(4242);
             Socket socket = serverSocket.accept();
 
             SocialPostingServer server = new SocialPostingServer(socket, currentClient);
@@ -48,16 +49,15 @@ public class SocialPostingServer implements Runnable {
     public boolean validateRegister(ArrayList<User> allUsersInfo,String username, String password, String alias) {
         for (User user : allUsersInfo) {
             if (user.getUsername().equals(username) && user.getPassword().equals(password) && user.getAlias().equals(alias)) {
-                return true;
+                return false;
             }
         }
-        return false;
+        return true;
     }
 
     @Override
     public void run() {
         try {
-
             InputStream inputStream = socket.getInputStream();
 
             ObjectInputStream ois = new ObjectInputStream(inputStream);
@@ -68,8 +68,6 @@ public class SocialPostingServer implements Runnable {
 
             LoginGUI loginGUI = new LoginGUI();
 
-
-
             // Read message from client
             String serverMessage = (String) ois.readObject();
             String[] userInfoArray = serverMessage.split(",");
@@ -78,8 +76,10 @@ public class SocialPostingServer implements Runnable {
 
             //Return response to client
             // validate username and password (return a boolean type to decide to run the PostGUI)
-            boolean loginValid = validateUser(loginGUI.allUsersInfo, userInfoArray[0], userInfoArray[1]);
-            boolean registerValid = validateRegister(loginGUI.allUsersInfo, userInfoArray[0], userInfoArray[1], userInfoArray[2]);
+            ArrayList<User> users = loginGUI.readUserInfo();
+
+            boolean loginValid = validateUser(users, userInfoArray[0], userInfoArray[1]);
+            boolean registerValid = validateRegister(users, userInfoArray[0], userInfoArray[1], userInfoArray[2]);
 
             // Write message to client
             oos.writeObject(loginValid);
