@@ -8,6 +8,7 @@ import org.junit.runner.notification.Failure;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
 
 /**
  * A framework to run public test cases.
@@ -84,7 +85,7 @@ public class serverTest {
             Class<?> clazz;
             String socket = "socket";
 
-            clazz = Client.class;
+            clazz = SocialPostingServer.class;
 
             try {
                 clazz.getDeclaredConstructor(Socket.class, int.class);
@@ -95,22 +96,20 @@ public class serverTest {
             }
 
             try {
-                clazz.getDeclaredMethod("validateUser");
+                clazz.getDeclaredMethod("validateUser", ArrayList.class, String.class, String.class);
             } catch (NoSuchMethodException e) {
                 Assert.fail("Ensure that `SocialPostingServer` declares a method " +
-                        "named `validateUser` that is `public`, has a return type of `String`, and has three parameters!");
+                        "named `validateUser` that is `public`, has a return type of `Boolean`, and has three parameters!");
                 return;
             }
 
             try {
-                clazz.getDeclaredMethod("validateRegister");
+                clazz.getDeclaredMethod("validateRegister", ArrayList.class, String.class, String.class, String.class);
             } catch (NoSuchMethodException e) {
                 Assert.fail("Ensure that `SocialPostingServer` declares a method " +
                         "named `validateRegister` that is `public`, has a return type of `String`, and has three parameters!");
                 return;
             }
-
-            // TODO: add more declaration validations here
 
             try {
                 clazz.getDeclaredField(socket);
@@ -127,31 +126,6 @@ public class serverTest {
             }
 
         }
-
-//        @Test(timeout = 1000)
-//        public void clientRegistrationTest() throws IOException, ClassNotFoundException {
-//            String msg = "123,123,123";
-//            boolean ret;
-//
-//            Client client = new Client(msg);
-//            ret = client.connect();
-//            Assert.assertEquals(ret, true);
-//        } // registrationTest
-//
-//
-//        @Test(timeout = 1000)
-//        public void duplicateRegistrationTest() throws IOException, ClassNotFoundException {
-//            String[] msg = {"123,123,123","123,123,123"};
-//            boolean[] ret = new boolean[2];
-//            boolean[] ret1 = {true, false};
-//
-//            for (int i = 0; i < msg.length; i++) {
-//                Client client = new Client(msg[i]);
-//                ret[i] = client.connect();
-//                Assert.assertEquals(ret[i], ret1[i]);
-//            }
-//        } // duplicateTest
-
     }
 
 }
