@@ -445,21 +445,20 @@ public class Poster {
                 int panelLoc = Integer.parseInt(postSplit[6]);
                 ArrayList<Comment> comments = new ArrayList<>();
                 if (postSplit.length > 7) {
-                    String[] commentSplit = postSplit[7].split(":::");
                     try {
                         String[] allcoms = postSplit[7].split("::");
                         for (int j = 0; j < allcoms.length; j++) {
-                            if (i >= allcoms.length || allcoms[i].equals(";:;")) {
+                            if (allcoms[j].equals(";:;")) {
                                 break;
                             }
-                            allcoms[i] = allcoms[i].replace("[", "");
-                            allcoms[i] = allcoms[i].replace("]", "");
-                            String[] comvalues = allcoms[i].split(",");
-                            String commentername1 = comvalues[0];
-                            String comstring1 = comvalues[1];
-                            int likes1 = Integer.parseInt(comvalues[2]);
-                            String Time1 = comvalues[3];
-                            int commentID1 = Integer.parseInt(comvalues[4]);
+                            String[] commentString = allcoms[j].split(",");
+                            commentString[0] = commentString[0].replace("[", "");
+                            commentString[4] = commentString[4].replace("]", "");
+                            String commentername1 = commentString[0];
+                            String comstring1 = commentString[1];
+                            int likes1 = Integer.parseInt(commentString[2]);
+                            String Time1 = commentString[3];
+                            int commentID1 = Integer.parseInt(commentString[4]);
                             Comment tempcomment1 = new Comment(commentername1, comstring1, likes1, Time1, commentID1);
                             comments.add(tempcomment1);
                         }

@@ -7,6 +7,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import javax.swing.BorderFactory;
 
 import static javax.swing.JOptionPane.YES_OPTION;
 
@@ -270,6 +271,20 @@ public class PostGUI extends JComponent implements Runnable {
                 String title = user1.getUsername() + ":" + user1.getAlias() + timeString;
                 Border bor = BorderFactory.createTitledBorder(title);
                 JLabel label = new JLabel(post.getPostString());
+                if (post.getAllComments() != null) {
+                    JPanel commentPanel = new JPanel();
+                    commentPanel.setLayout(new GridLayout(0,1));
+                    for (Comment comment : post.getAllComments()) {
+                        JPanel newComment = new JPanel();
+
+                        JLabel label1 = new JLabel(comment.getCommentername() + ":" + comment.getComtext());
+                        newComment.add(label1);
+                        commentPanel.add(newComment);
+                    }
+                    newPost.add(commentPanel, BorderLayout.SOUTH);
+
+                }
+
 
 
                 //JButton combutton = new JButton("Comment");
@@ -384,9 +399,7 @@ public class PostGUI extends JComponent implements Runnable {
                             //editedPost.add(tempeditButton);
 
                             currentPosts.set(post.getPanelLoc(), editedPost);
-                            if (loc != -1) {
-                                userPosts.set(loc, post);
-                            }
+                            userPosts.set(loc, post);
                             allPosts.set(loc1, post);
                             poster.writeAll(allPosts);
                             JPanel currentPanel = new JPanel();
