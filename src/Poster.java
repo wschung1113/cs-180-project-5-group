@@ -333,6 +333,9 @@ public class Poster {
                     try {
                         String[] allcoms = postSplit[4].split("::");
                         for (int j = 0; j < allcoms.length; j++) {
+                            if (i >= allcoms.length || allcoms[i].equals(";:;")) {
+                                break;
+                            }
                             allcoms[i] = allcoms[i].replace("[", "");
                             allcoms[i] = allcoms[i].replace("]", "");
                             String[] comvalues = allcoms[i].split(",");
@@ -469,8 +472,11 @@ public class Poster {
                 if (postSplit.length > 7) {
                     String[] commentSplit = postSplit[7].split(":::");
                     try {
-                        String[] allcoms = postSplit[4].split("::");
+                        String[] allcoms = postSplit[7].split("::");
                         for (int j = 0; j < allcoms.length; j++) {
+                            if (i >= allcoms.length || allcoms[i].equals(";:;")) {
+                                break;
+                            }
                             allcoms[i] = allcoms[i].replace("[", "");
                             allcoms[i] = allcoms[i].replace("]", "");
                             String[] comvalues = allcoms[i].split(",");
