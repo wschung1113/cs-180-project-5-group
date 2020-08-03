@@ -118,8 +118,8 @@ public class PostGUI extends JComponent implements Runnable {
 
     //for posts
 
-    User user = new User("default", "default", "default"); //default
-    //User user;
+//    User user = new User("default", "default", "default"); //default
+    User user;
     Post post; //post being written
     Poster poster; //for creating, editing, and deleting posts
 
@@ -610,7 +610,7 @@ public class PostGUI extends JComponent implements Runnable {
 //                    userHomeContent.add(panel);
 
 
-                    userHomeContent.add(postGridLayoutPanel);
+                    userHomeContent.add(new JScrollPane(postGridLayoutPanel));
 
                     frame.getContentPane().add(userHomeContent);
 
@@ -643,8 +643,6 @@ public class PostGUI extends JComponent implements Runnable {
                         null, JOptionPane.YES_NO_OPTION);
 
                 if (yesNo == YES_OPTION) {
-                    // returns text to somewhere in contentTextArea
-
                     poster = new Poster(user);
                     LocalDateTime time0 = LocalDateTime.now();
                     String timeString = time0.toString();
@@ -694,7 +692,7 @@ public class PostGUI extends JComponent implements Runnable {
 
                     frame.getContentPane().removeAll();  // or removeAll();
 
-                    frame.getContentPane().add(newsFeedHomeContent);
+                    frame.getContentPane().add(new JScrollPane(newsFeedHomeContent));
 
                     frame.repaint();
 
