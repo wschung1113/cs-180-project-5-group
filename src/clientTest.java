@@ -6,6 +6,7 @@ import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 
+import java.awt.*;
 import java.io.*;
 import java.util.ArrayList;
 
@@ -94,7 +95,7 @@ public class clientTest {
             }
 
             try {
-                clazz.getDeclaredMethod("connect");
+                clazz.getDeclaredMethod("connect", int.class, ArrayList.class, Client.class);
             } catch (NoSuchMethodException e) {
                 Assert.fail("Ensure that `Client` declares a method named `connect` that is `public`, has a return type of `String`, and has 3 parameters!");
                 return;

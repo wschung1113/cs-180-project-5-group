@@ -87,7 +87,7 @@ public class serverTest {
             clazz = Client.class;
 
             try {
-                clazz.getDeclaredConstructor(Socket.class, Integer.class);
+                clazz.getDeclaredConstructor(Socket.class, int.class);
             } catch (NoSuchMethodException e) {
                 Assert.fail("Ensure that `SocialPostingServer` declares a constructor " +
                         "that is `public` and has one parameter of type `Socket`!");
