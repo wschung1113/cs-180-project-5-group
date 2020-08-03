@@ -1,14 +1,14 @@
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
-import java.awt.event.*;
-import java.time.*;
-
-import static javax.swing.JOptionPane.OK_OPTION;
-import static javax.swing.JOptionPane.YES_OPTION;
-
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-/// I pushed this class
+
+import static javax.swing.JOptionPane.YES_OPTION;
 
 public class PostGUI extends JComponent implements Runnable {
     public PostGUI(User user) {  // constructor
@@ -63,6 +63,8 @@ public class PostGUI extends JComponent implements Runnable {
     int curX;  // current mouse x coordinate for click
     int curY;  // current mouse y coordinate for click
 
+    int likes = 0;
+
     String postType;  // whether the post is "Private" or "Public"
     String time; //time post was made
     private static final String[] postPrivacyOptions = {"Public", "Private"};
@@ -71,7 +73,7 @@ public class PostGUI extends JComponent implements Runnable {
     Container postContent;
     Container newsFeedHomeContent;
     Container userHomeContent;
-    int likes = 0;
+    Container commentContent;
 
     // Panels
     JPanel panel;
@@ -85,16 +87,18 @@ public class PostGUI extends JComponent implements Runnable {
     JPanel buttonHomePanel;
     JPanel createPostHomePanel;
     JLabel label1;
+    JPanel commentContentPanel;
+    JPanel myCommentsPanel;
 
     int numcom = 0;
     ArrayList<Comment> commentsOnPostList = new ArrayList<>();
+    ArrayList<Comment> myCommentsList = new ArrayList<>();
     ArrayList<JButton> commentLikeButton = new ArrayList<>();
     ArrayList<JButton> commentEditButton = new ArrayList<>();
     ArrayList<JButton> commentDeleteButton = new ArrayList<>();
 
 
     ArrayList<String> likeOnComments = new ArrayList<>();
-    //int i=0;
     JButton templikeButton;
     JButton tempeditButton;
     JButton tempdeleteButton;
@@ -118,10 +122,11 @@ public class PostGUI extends JComponent implements Runnable {
     JButton createPostHomeButton;
     JButton commentButton;
     JButton commentHomeButton;
+    JButton myCommentsButton;
 
     //for posts
-    User user = new User("default", "default", "default"); //default
-    //User user;
+//    User user = new User("default", "default", "default"); //default
+    User user;
     Post post; //post being written
     Poster poster; //for creating, editing, and deleting posts
 
@@ -267,22 +272,22 @@ public class PostGUI extends JComponent implements Runnable {
                 JLabel label = new JLabel(post.getPostString());
 
 
-               // JButton combutton = new JButton("Comment");
-               // int likes;
-                //combutton.setPreferredSize(new Dimension(100, 20));
+                JButton combutton = new JButton("Comment");
+                int likes;
+                combutton.setPreferredSize(new Dimension(100, 20));
                 //combutton.addActionListener(combuttonActionListener);
                 newPost.setBorder(bor);
                 newPost.add(label);
-               // JPanel commentPanel = new JPanel(new GridLayout(0, 1));
-               // JPanel newCom = new JPanel();
-               // newCom.setLayout(new FlowLayout());
-               // newCom.add(comfield);
-               // newCom.add(combutton);
-               // commentPanel.add(newCom);
+                JPanel commentPanel = new JPanel(new GridLayout(0, 1));
+                JPanel newCom = new JPanel();
+                newCom.setLayout(new FlowLayout());
+                newCom.add(comfield);
+                newCom.add(combutton);
+                commentPanel.add(newCom);
                 postPanel.add(newPost);
                 currentPosts.add(newPost);
 
-              //  newPost.add(commentPanel, BorderLayout.SOUTH);
+                newPost.add(commentPanel, BorderLayout.SOUTH);
                 //add existing comments here instead
             }
             poster.writeToFile(userPosts);
@@ -301,15 +306,16 @@ public class PostGUI extends JComponent implements Runnable {
                 yesNo = JOptionPane.showConfirmDialog(null, "Comment on post?",
                         null, JOptionPane.YES_NO_OPTION);
                 if (yesNo == JOptionPane.YES_OPTION) {
+                    userPosts = poster.readFromFile(user);
                     allPosts = poster.readAll();
 
                     if (allPosts == null || allPosts.size() == 0) {
                         JOptionPane.showMessageDialog(null, "Error! No posts available for commenting on.",
                                 null, JOptionPane.ERROR_MESSAGE);
                     } else {
-                        String[] options = new String[userPosts.size()];
+                        String[] options = new String[allPosts.size()];
                         int j = 1;
-                        for (Post post : userPosts) {
+                        for (Post post : allPosts) {
                             options[j - 1] = j + ": " + post.getPostString();
                             j++;
                         }
@@ -363,6 +369,16 @@ public class PostGUI extends JComponent implements Runnable {
                             ArrayList<Comment> tempCommentArrayList = new ArrayList<>();
                             tempCommentArrayList = post.getAllComments();
                             tempCommentArrayList.add(tempcomment);
+
+                            myCommentsList.add(tempcomment);
+                            JPanel myCommentsPanel1 = new JPanel(new GridLayout(1, 2));
+                            JLabel commenterNameLabel = new JLabel(tempcomment.getCommentername());
+                            JLabel comTextLabel = new JLabel(tempcomment.getComtext());
+
+                            myCommentsPanel1.add(commenterNameLabel);
+                            myCommentsPanel1.add(comTextLabel);
+                            myCommentsPanel.add(myCommentsPanel1);
+
                             post.setAllComments(tempCommentArrayList);
                             editedPost.add(commentlabel, BorderLayout.SOUTH);
                             //editedPost.add(tempeditButton);
@@ -482,15 +498,15 @@ public class PostGUI extends JComponent implements Runnable {
                 yesNo = JOptionPane.showConfirmDialog(null, "Delete Comment?",
                         null, JOptionPane.YES_NO_OPTION);
                 if (yesNo == JOptionPane.YES_OPTION) {
-                    allPosts = poster.readAll();
+                    userPosts = poster.readFromFile(user);
 
-                    if (allPosts == null || allPosts.size() == 0) {
+                    if (userPosts.size() == 0) {
                         JOptionPane.showMessageDialog(null, "Error! No posts available for editing",
                                 null, JOptionPane.ERROR_MESSAGE);
                     } else {
                         String[] options = new String[userPosts.size()];
                         int j = 1;
-                        for (Post post : allPosts) {
+                        for (Post post : userPosts) {
                             options[j - 1] = j + ": " + post.getPostString();
                             j++;
                         }
@@ -767,89 +783,71 @@ public class PostGUI extends JComponent implements Runnable {
                 });
 
 
-        // userHomeContent
-        // commentContent
-        JButton myCommentsButton;
-        ArrayList<Comment> myCommentsList;
-        JPanel commentContentPanel;
-        JPanel myCommentsPanel;
-        Container commentContent;
-        commentContent = new Container();
-        commentContent.setLayout(new BorderLayout());
-        commentContent.setSize(frame.getSize());  // set size of the content equal to that of the frame
-        commentContent.add(new PostGUI(), BorderLayout.CENTER);
-        myCommentsButton = new JButton("My Comments");
-        myCommentsButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                // sends to commentContent
-                frame.getContentPane().removeAll();
+                // commentContent
+                commentContent = new Container();
+                commentContent.setLayout(new BorderLayout());
+                commentContent.setSize(frame.getSize());  // set size of the content equal to that of the frame
+                commentContent.add(new PostGUI(), BorderLayout.CENTER);
+                myCommentsButton = new JButton("My Comments");
+                myCommentsButton.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        // sends to commentContent
+                        frame.getContentPane().removeAll();
 
-                frame.getContentPane().add(commentContent);
+                        frame.getContentPane().add(commentContent);
 
-                frame.repaint();
+                        frame.repaint();
 
-                frame.revalidate();
-            }
-        });
+                        frame.revalidate();
+                    }
+                });
 
-        userHomeContent = new Container();
-        userHomeContent.setLayout(new BorderLayout());
-        userHomeContent.setSize(frame.getSize());  // set size of the content equal to that of the frame
-        userHomeContent.add(new PostGUI(), BorderLayout.CENTER);
+                // panel 1
+                JButton backButton = new JButton("Back");
+                backButton.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        // sends back to userHome
+                        frame.getContentPane().removeAll();
 
-        // panel 1
-        buttonHomePanel = new JPanel();
-        buttonHomePanel.setLayout(new GridLayout(1, 2));
-        buttonHomePanel.add(editHomeButton);
-        buttonHomePanel.add(deleteHomeButton);
-        userHomeContent.add(buttonHomePanel, BorderLayout.SOUTH);
+                        frame.getContentPane().add(userHomeContent);
 
-        JPanel createPostHomePanel = new JPanel();
-        createPostHomePanel.setLayout(new GridLayout(1, 5));
-        createPostHomePanel.add(myCommentsButton);
-        for (int i = 0; i < 3; i++) {
-            createPostHomePanel.add(new JLabel());
-        }
-        createPostHomePanel.add(createPostHomeButton);
-        userHomeContent.add(createPostHomePanel, BorderLayout.NORTH);
+                        frame.repaint();
 
+                        frame.revalidate();
+                    }
+                });
+                commentContentPanel = new JPanel();
+                commentContentPanel.setLayout(new GridLayout(1, 8));
+                commentContentPanel.add(backButton);
+                for (int i = 0; i < 7; i++) {
+                    commentContentPanel.add(new JLabel());
+                }
+                commentContentPanel.add(backButton);
+                commentContent.add(commentContentPanel, BorderLayout.NORTH);
 
+                // panel 2
+                myCommentsPanel = new JPanel(new GridLayout(0, 1));
+                commentContent.add(new JScrollPane(myCommentsPanel), BorderLayout.CENTER);
 
 
-        // panel 1
-        JButton backButton = new JButton("Back");
-        backButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                // sends back to userHome
-                frame.getContentPane().removeAll();
 
-                frame.getContentPane().add(userHomeContent);
+                // userHomeContent
+                userHomeContent = new Container();
+                userHomeContent.setLayout(new BorderLayout());
+                userHomeContent.setSize(frame.getSize());  // set size of the content equal to that of the frame
+                userHomeContent.add(new PostGUI(), BorderLayout.CENTER);
 
-                frame.repaint();
-
-                frame.revalidate();
-            }
-        });
-        commentContentPanel = new JPanel();
-        commentContentPanel.setLayout(new GridLayout(1, 8));
-        commentContentPanel.add(backButton);
-        for (int i = 0; i < 7; i++) {
-            commentContentPanel.add(new JLabel());
-        }
-        commentContentPanel.add(backButton);
-        commentContent.add(commentContentPanel, BorderLayout.NORTH);
-
-        // panel 2
-        myCommentsPanel = new JPanel(new GridLayout(0, 1));
+                // panel 1
                 buttonHomePanel = new JPanel();
                 buttonHomePanel.setLayout(new GridLayout(1, 2));
                 buttonHomePanel.add(editHomeButton);
                 buttonHomePanel.add(deleteHomeButton);
                 userHomeContent.add(buttonHomePanel, BorderLayout.SOUTH);
 
-                createPostHomePanel = new JPanel();
-                createPostHomePanel.setLayout(new GridLayout(1, 8));
-                for (int i = 0; i < 8; i++) {  // add empty labels to display createPostButton on the top-right corner
+                JPanel createPostHomePanel = new JPanel();
+                createPostHomePanel.setLayout(new GridLayout(1, 5));
+                createPostHomePanel.add(myCommentsButton);
+                for (int i = 0; i < 3; i++) {
                     createPostHomePanel.add(new JLabel());
                 }
                 createPostHomePanel.add(createPostHomeButton);
@@ -884,7 +882,7 @@ public class PostGUI extends JComponent implements Runnable {
                     }
                 });
 
-                nameButton = new JButton("username");
+                nameButton = new JButton(user.getUsername());
                 nameButton.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
                         // send to news feed home
