@@ -399,7 +399,9 @@ public class PostGUI extends JComponent implements Runnable {
                             //editedPost.add(tempeditButton);
 
                             currentPosts.set(post.getPanelLoc(), editedPost);
-                            userPosts.set(loc, post);
+                            if (loc != -1 && loc != userPosts.size()) {
+                                userPosts.set(loc, post);
+                            }
                             allPosts.set(loc1, post);
                             poster.writeAll(allPosts);
                             JPanel currentPanel = new JPanel();

@@ -244,7 +244,7 @@ public class Poster {
             sb.append(";:;");
             sb.append(post.getPanelLoc());
             sb.append(";:;");
-                for (int i = 0; i < post.getAllComments().size() ; i++) {
+                for (int i = 0; i < post.getAllComments().size(); i++) {
                     Comment temp= new Comment();
                     temp= post.getAllComments().get(i);
                     sb.append("["+temp.getCommentername()+","+temp.getComtext()+","+temp.getLikes()+","+temp.getTime()+","+temp.getCommentID()+"]");
