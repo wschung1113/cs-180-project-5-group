@@ -285,6 +285,8 @@ public class PostGUI extends JComponent implements Runnable {
                 newPost.add(commentPanel, BorderLayout.SOUTH);
                 //add existing comments here instead
             }
+            poster.writeToFile(userPosts);
+            user.setPosts(userPosts);
 
             newsFeedHomeContent.add(postPanel);
         } else {
@@ -569,7 +571,7 @@ public class PostGUI extends JComponent implements Runnable {
                 if (yesNo == JOptionPane.YES_OPTION) {
                     userPosts = poster.readFromFile(user);
 
-                    if (userPosts.size() == 0) {
+                    if (userPosts == null || userPosts.size() == 0) {
                         JOptionPane.showMessageDialog(null, "Error! No posts available for editing",
                                 null, JOptionPane.ERROR_MESSAGE);
                     } else {
@@ -600,30 +602,39 @@ public class PostGUI extends JComponent implements Runnable {
                             }
 
                             if (post != null) {
-                                editedPost = new JPanel();
-                                editedPost.setLayout(new BorderLayout());
 
-                                LocalDateTime time0 = LocalDateTime.now();
-                                String timeString = time0.toString();
-                                String[] timeArray = timeString.split("T");
-                                String date = timeArray[0];
-
-                                String[] time1 = timeArray[1].split(":");
-                                String hour = time1[0];
-                                String minute = time1[1];
-                                time = date + " " + hour + ":" + minute;
-
-                                String title = user.getUsername() + ":" + user.getAlias() + ":" + time;
-                                Border bor = BorderFactory.createTitledBorder(title);
-                                JLabel label = new JLabel(post.getPostString());
-
-                                editedPost.setBorder(bor);
-                                editedPost.add(label);
-
-                                currentPosts.set(post.getPanelLoc(), editedPost);
                                 userPosts.set(loc, post);
                                 allPosts.set(loc1, post);
                                 poster.writeAll(allPosts);
+                                ArrayList<JPanel> resetPosts = new ArrayList<JPanel>();
+                                for (Post post : allPosts) {
+                                    String timeString = post.getTime();
+                                    newPost = new JPanel();
+                                    newPost.setLayout(new BorderLayout());
+                                    User user1 = post.getUser();
+                                    String title = user1.getUsername() + ":" + user1.getAlias() + timeString;
+                                    Border bor = BorderFactory.createTitledBorder(title);
+                                    JLabel label = new JLabel(post.getPostString());
+                                    //JTextField comfield = new JTextField();
+                                   // comfield.setPreferredSize(new Dimension(350, 20));
+                                   // JButton combutton = new JButton("Comment");
+                                    //int likes;
+                                   // combutton.setPreferredSize(new Dimension(100, 20));
+                                    //combutton.addActionListener(combuttonActionListener);
+                                    newPost.setBorder(bor);
+                                    newPost.add(label);
+                                    //JPanel commentPanel = new JPanel(new GridLayout(0,1));
+                                   // JPanel newCom = new JPanel();
+                                    //newCom.setLayout(new FlowLayout());
+                                    //newCom.add(comfield);
+                                    //newCom.add(combutton);
+                                   // commentPanel.add(newCom);
+                                    postPanel.add(newPost);
+
+                                    //newPost.add(commentPanel, BorderLayout.SOUTH);
+                                    resetPosts.add(newPost);
+                                }
+                                currentPosts = resetPosts;
                                 JPanel currentPanel = new JPanel();
                                 currentPanel.setLayout(new GridLayout(0, 1));
                                 for (JPanel panel : currentPosts) {
@@ -650,7 +661,7 @@ public class PostGUI extends JComponent implements Runnable {
 
                     userPosts = poster.readFromFile(user);
 
-                    if (userPosts.size() == 0) {
+                    if (userPosts == null || userPosts.size() == 0) {
                         JOptionPane.showMessageDialog(null, "Error! No posts available for deleting",
                                 null, JOptionPane.ERROR_MESSAGE);
                     } else {
@@ -663,7 +674,6 @@ public class PostGUI extends JComponent implements Runnable {
                         String whichPost = (String) JOptionPane.showInputDialog(null, "Which post would you like to delete?",
                                 "Delete Post", JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
                         if (whichPost != null) {
-                            postPanel.removeAll();
                             String option = whichPost.substring(3, whichPost.length());
                             int loc = poster.findPost(user, option, 0);
                             int loc1 = poster.findPost(user, option, 1);
@@ -671,10 +681,42 @@ public class PostGUI extends JComponent implements Runnable {
                                 JOptionPane.showMessageDialog(null, "This post is not available for deleting!",
                                         "Error", JOptionPane.ERROR_MESSAGE);
                             } else {
-                                currentPosts.remove(userPosts.get(loc).getPanelLoc());
+                                postPanel.removeAll();
                                 userPosts.remove(loc);
                                 allPosts.remove(loc1);
                                 poster.writeAll(allPosts);
+                                poster.writeToFile(userPosts);
+                                ArrayList<JPanel> resetPosts = new ArrayList<JPanel>();
+                                for (Post post : allPosts) {
+                                    LocalDateTime time0 = post.getTime0();
+                                    String timeString = post.getTime();
+                                    newPost = new JPanel();
+                                    newPost.setLayout(new BorderLayout());
+                                    User user1 = post.getUser();
+                                    String title = user1.getUsername() + ":" + user1.getAlias() + timeString;
+                                    Border bor = BorderFactory.createTitledBorder(title);
+                                    JLabel label = new JLabel(post.getPostString());
+                                   // JTextField comfield = new JTextField();
+                                    //comfield.setPreferredSize(new Dimension(350, 20));
+                                    //JButton combutton = new JButton("Comment");
+                                    //int likes;
+                                   // combutton.setPreferredSize(new Dimension(100, 20));
+                                    //combutton.addActionListener(combuttonActionListener);
+                                    newPost.setBorder(bor);
+                                    newPost.add(label);
+                                  //  JPanel commentPanel = new JPanel(new GridLayout(0,1));
+                                    //JPanel newCom = new JPanel();
+                                    //newCom.setLayout(new FlowLayout());
+                                    //newCom.add(comfield);
+                                    //newCom.add(combutton);
+                                   // commentPanel.add(newCom);
+                                    postPanel.add(newPost);
+
+                                    //newPost.add(commentPanel, BorderLayout.SOUTH);
+                                    resetPosts.add(newPost);
+                                }
+                                currentPosts = resetPosts;
+
                                 JPanel currentPanel = new JPanel();
                                 currentPanel.setLayout(new GridLayout(0, 1));
                                 for (JPanel panel : currentPosts) {
