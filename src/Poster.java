@@ -349,6 +349,9 @@ public class Poster {
         } else if (option == 1) { //find post in all posts
             posts = readAll();
         }
+        if (posts == null) {
+            return -1;
+        }
         for (Post post : posts) {
             if (post.getPostString().equals(s)) {
                 return loc;

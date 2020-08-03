@@ -125,8 +125,8 @@ public class PostGUI extends JComponent implements Runnable {
     JButton myCommentsButton;
 
     //for posts
-//    User user = new User("default", "default", "default"); //default
-    User user;
+    User user = new User("default", "default", "default"); //default
+
     Post post; //post being written
     Poster poster; //for creating, editing, and deleting posts
 
@@ -272,22 +272,22 @@ public class PostGUI extends JComponent implements Runnable {
                 JLabel label = new JLabel(post.getPostString());
 
 
-                JButton combutton = new JButton("Comment");
-                int likes;
-                combutton.setPreferredSize(new Dimension(100, 20));
+                //JButton combutton = new JButton("Comment");
+                //int likes;
+                //combutton.setPreferredSize(new Dimension(100, 20));
                 //combutton.addActionListener(combuttonActionListener);
                 newPost.setBorder(bor);
                 newPost.add(label);
-                JPanel commentPanel = new JPanel(new GridLayout(0, 1));
-                JPanel newCom = new JPanel();
-                newCom.setLayout(new FlowLayout());
-                newCom.add(comfield);
-                newCom.add(combutton);
-                commentPanel.add(newCom);
+                //JPanel commentPanel = new JPanel(new GridLayout(0, 1));
+                //JPanel newCom = new JPanel();
+               // newCom.setLayout(new FlowLayout());
+               // newCom.add(comfield);
+               // newCom.add(combutton);
+               // commentPanel.add(newCom);
                 postPanel.add(newPost);
                 currentPosts.add(newPost);
 
-                newPost.add(commentPanel, BorderLayout.SOUTH);
+                //newPost.add(commentPanel, BorderLayout.SOUTH);
                 //add existing comments here instead
             }
             poster.writeToFile(userPosts);
@@ -330,7 +330,7 @@ public class PostGUI extends JComponent implements Runnable {
                             String option = whichPost.substring(3, whichPost.length());
                             int loc = poster.findPost(user, option, 0);
                             int loc1 = poster.findPost(user, option, 1);
-                            post = user.getPosts().get(loc); //userPosts.get(loc);
+                            post = allPosts.get(loc1); //userPosts.get(loc);
 
                             //post = poster.editPost(user, userPosts.get(loc));
                             editedPost = new JPanel();
@@ -384,7 +384,9 @@ public class PostGUI extends JComponent implements Runnable {
                             //editedPost.add(tempeditButton);
 
                             currentPosts.set(post.getPanelLoc(), editedPost);
-                            userPosts.set(loc, post);
+                            if (loc != -1) {
+                                userPosts.set(loc, post);
+                            }
                             allPosts.set(loc1, post);
                             poster.writeAll(allPosts);
                             JPanel currentPanel = new JPanel();
