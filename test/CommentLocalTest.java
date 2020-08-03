@@ -1,4 +1,4 @@
-/**import org.junit.After;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,11 +10,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.PrintStream;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.Random;
 
 public class CommentLocalTest {
     public static void main(String[] args) {
@@ -28,13 +24,13 @@ public class CommentLocalTest {
         }
     }
 
-    /**
-     * Local Test Cases
-     *
-     * <p>Purdue University -- CS18000 -- Summer 2020</p>
-     *
-     * @author Purdue CS
-     * @version August 02, 2020
+
+//     * Local Test Cases
+//     *
+//     * <p>Purdue University -- CS18000 -- Summer 2020</p>
+//     *
+//     * @author Purdue CS
+//     * @version August 02, 2020
 
     public static class TestCase {
         private final PrintStream originalOutput = System.out;
@@ -210,5 +206,3 @@ public class CommentLocalTest {
 
     }
 }
-
-*/

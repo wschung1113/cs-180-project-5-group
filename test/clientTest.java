@@ -1,4 +1,4 @@
-/**import org.junit.After;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -6,7 +6,6 @@ import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 
-import java.awt.*;
 import java.io.*;
 import java.util.ArrayList;
 
@@ -17,6 +16,7 @@ import java.util.ArrayList;
  *
  * @author Purdue CS
  * @version June 15, 2020
+ */
 
 public class clientTest {
     public static void main(String[] args) {
@@ -29,13 +29,13 @@ public class clientTest {
             }
         }
     }
-    /**
-     * A set of public test cases.
-     *
-     * <p>Purdue University -- CS18000 -- Summer 2020</p>
-     *
-     * @author Purdue CS
-     * @version June 15, 2020
+
+//     * A set of public test cases.
+//     *
+//     * <p>Purdue University -- CS18000 -- Summer 2020</p>
+//     *
+//     * @author Purdue CS
+//     * @version June 15, 2020
 
     public static class TestCase {
         private final PrintStream originalOutput = System.out;
@@ -142,4 +142,3 @@ public class clientTest {
     }
 
 }
-*/

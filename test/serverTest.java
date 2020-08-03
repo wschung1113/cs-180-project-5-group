@@ -1,4 +1,6 @@
-/**import org.junit.After;
+
+import org.junit.After;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,13 +12,13 @@ import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 
-/**
- * A framework to run public test cases.
- *
- * <p>Purdue University -- CS18000 -- Summer 2020</p>
- *
- * @author Purdue CS
- * @version June 15, 2020
+
+// * A framework to run public test cases.
+// *
+// * <p>Purdue University -- CS18000 -- Summer 2020</p>
+// *
+// * @author Purdue CS
+// * @version June 15, 2020
 
 public class serverTest {
     public static void main(String[] args) {
@@ -29,13 +31,13 @@ public class serverTest {
             }
         }
     }
-    /**
-     * A set of public test cases.
-     *
-     * <p>Purdue University -- CS18000 -- Summer 2020</p>
-     *
-     * @author Purdue CS
-     * @version June 15, 2020
+
+//     * A set of public test cases.
+//     *
+//     * <p>Purdue University -- CS18000 -- Summer 2020</p>
+//     *
+//     * @author Purdue CS
+//     * @version June 15, 2020
 
     public static class TestCase {
         private final PrintStream originalOutput = System.out;
@@ -129,4 +131,3 @@ public class serverTest {
     }
 
 }
-*/
